@@ -55,43 +55,6 @@ export default class CartItems extends Component {
       );
     }
 
-    return (
-      <div>
-        {/* <Row>
-          <Card className="w-100">
-            <Card.Body>
-              <Row>
-                <Col md={3}>
-                  <img
-                    className="w-100 h-100"
-                    src="https://picsum.photos/500/500"
-                    style={{
-                      objectFit: "contain",
-                    }}
-                    alt="imgName"
-                  />
-                </Col>
-                <Col md={6}>
-                  <div className="p-2 mt-3">
-                    <h4>Disco </h4>
-                    <h5>Valor: R$50,00</h5>
-                  </div>
-                </Col>
-                <Col md={3}>
-                  <div className="p-2">
-                    <SsInput label="Quantidade" />
-                    <Button variant="secondary" block>
-                      <FontAwesomeIcon icon={faTimesCircle} className="mr-2" />
-                      Remover
-                    </Button>
-                  </div>
-                </Col>
-              </Row>
-            </Card.Body>
-          </Card>
-        </Row> */}
-        {cart}
-      </div>
-    );
+    return <div>{cart}</div>;
   }
 }

@@ -65,7 +65,7 @@ export default class App extends Component {
             component={login}
           />
           <this.PublicRoute
-            path="/signUp"
+            path={process.env.PUBLIC_URL + "/signUp"}
             //authed={this.state.isLoggedIn}
             exact
             component={signUp}

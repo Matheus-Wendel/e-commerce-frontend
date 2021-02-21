@@ -4,7 +4,10 @@ import Navbar from "react-bootstrap/Navbar";
 import "../../App.css";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faStopCircle, faCompactDisc } from "@fortawesome/free-solid-svg-icons";
+import {
+  faShoppingCart,
+  faCompactDisc,
+} from "@fortawesome/free-solid-svg-icons";
 
 export default class SSNavbar extends Component {
   constructor(props) {
@@ -34,6 +37,10 @@ export default class SSNavbar extends Component {
             </NavDropdown>
           </Nav>
           <Nav>
+            <Nav.Link href="/cart">
+              <FontAwesomeIcon icon={faShoppingCart} className="mr-2" />
+              Meu carrinho
+            </Nav.Link>
             <Nav.Link href="/login">Login</Nav.Link>
             <Nav.Link href="/signUp">Cadastre-se</Nav.Link>
           </Nav>

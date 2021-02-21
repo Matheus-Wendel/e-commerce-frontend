@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 
+import cart from "./views/cart/cart";
+
 import signUp from "./views/signUp/signUp";
 
 import login from "./views/login/login";
@@ -67,6 +69,12 @@ export default class App extends Component {
             //authed={this.state.isLoggedIn}
             exact
             component={signUp}
+          />
+          <this.PublicRoute
+            path="/cart"
+            //authed={this.state.isLoggedIn}
+            exact
+            component={cart}
           />
 
           <this.NotFoundRoute //authed={this.state.isLoggedIn}

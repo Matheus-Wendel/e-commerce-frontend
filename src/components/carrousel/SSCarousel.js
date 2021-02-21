@@ -29,7 +29,7 @@ export default class SSCarousel extends Component {
     const { items } = this.state;
     const carrouselItems = items.map((item, i) => {
       return (
-        <Carousel.Item interval={1000}>
+        <Carousel.Item interval={5000}>
           <img
             style={{
               filter: "brightness(50%)",

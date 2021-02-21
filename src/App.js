@@ -50,7 +50,7 @@ export default class App extends Component {
 
   render() {
     return (
-      <BrowserRouter>
+      <BrowserRouter basename={process.env.PUBLIC_URL}>
         <Switch>
           <this.PublicRoute
             path="/"
@@ -65,7 +65,7 @@ export default class App extends Component {
             component={login}
           />
           <this.PublicRoute
-            path={process.env.PUBLIC_URL + "/signUp"}
+            path="/signUp"
             //authed={this.state.isLoggedIn}
             exact
             component={signUp}

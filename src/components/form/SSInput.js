@@ -6,7 +6,7 @@ export default class SSInput extends Component {
     return (
       <Form.Group>
         {this.props.label && (
-          <Form.Label {...this.props}>
+          <Form.Label>
             {this.props.required ? `${this.props.label} *` : this.props.label}
           </Form.Label>
         )}

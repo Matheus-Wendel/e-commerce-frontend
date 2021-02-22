@@ -28,10 +28,10 @@ export default class SSNavbar extends Component {
             <Nav.Link href="#features">Minhas compras</Nav.Link>
             <Nav.Link href="#pricing">Meus dados</Nav.Link>
             <NavDropdown title="Administrativo" id="collasible-nav-dropdown">
-              <NavDropdown.Item href="#action/3.1">Artistas</NavDropdown.Item>
-              <NavDropdown.Item href="#action/3.2">Gravadoras</NavDropdown.Item>
+              <NavDropdown.Item href="/artist">Artistas</NavDropdown.Item>
+              <NavDropdown.Item href="/genres">Gêneros</NavDropdown.Item>
               <NavDropdown.Divider />
-              <NavDropdown.Item href="#action/3.4">
+              <NavDropdown.Item href="/disc">
                 Cadastro de discos
               </NavDropdown.Item>
             </NavDropdown>

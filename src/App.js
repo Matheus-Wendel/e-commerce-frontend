@@ -1,5 +1,11 @@
 import React, { Component } from "react";
 
+import disc from "./views/disc/disc";
+
+import genre from "./views/genre/genre";
+
+import artist from "./views/artist/artist";
+
 import cart from "./views/cart/cart";
 
 import signUp from "./views/signUp/signUp";
@@ -75,6 +81,24 @@ export default class App extends Component {
             //authed={this.state.isLoggedIn}
             exact
             component={cart}
+          />
+          <this.PublicRoute
+            path="/artist"
+            //authed={this.state.isLoggedIn}
+            exact
+            component={artist}
+          />
+          <this.PublicRoute
+            path="/genres"
+            //authed={this.state.isLoggedIn}
+            exact
+            component={genre}
+          />
+          <this.PublicRoute
+            path="/disc"
+            //authed={this.state.isLoggedIn}
+            exact
+            component={disc}
           />
 
           <this.NotFoundRoute //authed={this.state.isLoggedIn}

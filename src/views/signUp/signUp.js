@@ -33,7 +33,7 @@ export default class SignUp extends Component {
                   Cadastre-se
                 </Card.Title>
                 <hr />
-                <SSForm onSubmit={this.handlePreventDefaut}>
+                <SSForm onSubmit={this.handlePreventDefaut} onCancel={() => {}}>
                   <h4>Dados pessoais</h4>
                   <SignUpForm />
                   <hr />

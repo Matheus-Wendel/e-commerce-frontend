@@ -60,9 +60,9 @@ export default class Login extends Component {
                     </Col>
                     <Col md={6}>
                       <Button
-                        onClick={this.handlePreventDefaut}
                         className="block-button col"
                         variant="secondary"
+                        href="/"
                         style={{ borderRadius: "0px" }}
                       >
                         Cancelar

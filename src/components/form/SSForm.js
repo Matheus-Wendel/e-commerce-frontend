@@ -38,7 +38,7 @@ export default class SSForm extends Component {
           </Col>
           <Col md={3}>
             <Button
-              type="submit"
+              href="/"
               variant="secondary"
               block
               disabled={this.props?.disabled}

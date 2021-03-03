@@ -1,17 +1,91 @@
 import { faCompactDisc } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Component } from "react";
+import clone from "clone";
+import React, { Component } from "react";
 import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
+import SSalert from "../../components/alert/SSalert";
+import { apiLogin } from "../../utils/api/api-utils";
+import { updateStateValue } from "../../utils/utils";
+
+const querystring = require("querystring");
 
 export default class Login extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      showAlert: false,
+      messages: [],
+      alertVariant: "",
+      alertTitle: "",
+      user: { email: "", password: "" },
+    };
+  }
+  componentDidMount() {
+    localStorage.clear();
+    let status = querystring.parse(this.props.location.search);
+
+    if (status["?status"] == "cadastro") {
+      this.setState({
+        showAlert: true,
+        messages: [
+          "Cadastro realizado com successo, faça login para continuar",
+        ],
+        alertVariant: "success",
+        alertTitle: "Sucesso",
+      });
+    }
+  }
+
+  async handleInputChange(event) {
+    const target = event.target;
+    let { name, value } = target;
+    const updated = updateStateValue(this.state, name, value);
+    await this.setState({
+      updated,
+    });
   }
   async handlePreventDefaut(event) {
     event.preventDefault();
     event.stopPropagation();
   }
+  async handleSubimit(event) {
+    event.preventDefault();
+    if (event.currentTarget.checkValidity() === false) {
+      event.stopPropagation();
+      this.setState(() => ({
+        formError: "true",
+      }));
+      return;
+    }
+    this.setState(() => ({
+      formError: "false",
+    }));
+
+    const user = clone(this.state.user);
+
+    try {
+      await apiLogin(user);
+      window.location.href = "/";
+    } catch (error) {
+      if (error.response?.data?.error) {
+        this.setState(() => ({
+          errorMessages: error.response?.data?.error.split(";;"),
+          showAlert: true,
+        }));
+        return;
+      }
+      if (error.response?.data?.message) {
+        this.setState(() => ({
+          errorMessages: [
+            `${error.response?.data.error} : ${error.response?.data.message}`,
+          ],
+          showAlert: true,
+        }));
+        return;
+      }
+    }
+  }
+
   render() {
     return (
       <Container
@@ -34,17 +108,33 @@ export default class Login extends Component {
                   Login
                 </Card.Subtitle>
                 <hr />
-
-                <Form onSubmit={this.handlePreventDefaut}>
+                <SSalert
+                  showAlert={this.state.showAlert}
+                  messages={this.state.messages}
+                  variant={this.state.alertVariant}
+                  title={this.state.alertTitle}
+                />
+                <Form onSubmit={this.handleSubimit.bind(this)} noValidate>
                   <Row className="mt-5">
                     <Col md={12}>
-                      <Form.Control placeholder="Email" />
+                      <Form.Control
+                        placeholder="Email"
+                        onChange={this.handleInputChange.bind(this)}
+                        name="user.email"
+                        value={this.state.user.email}
+                      />
                     </Col>
                   </Row>
 
                   <Row className="mt-3">
                     <Col md={12}>
-                      <Form.Control placeholder="Senha" />
+                      <Form.Control
+                        type="password"
+                        placeholder="Senha"
+                        onChange={this.handleInputChange.bind(this)}
+                        name="user.password"
+                        value={this.state.user.password}
+                      />
                     </Col>
                   </Row>
                   <Row className="mt-5 text-center">

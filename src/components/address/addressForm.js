@@ -2,8 +2,41 @@ import React, { Component } from "react";
 import { Col, Form } from "react-bootstrap";
 import SSInput from "../form/SSInput";
 import SSSelect from "../form/SSSelect";
+import { apiGet } from "../../utils/api/api-utils";
 
 export default class AddressForm extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      cities: [],
+      states: [],
+    };
+  }
+
+  async componentDidMount() {
+    let states = await apiGet(process.env.REACT_APP_STATE_ENDPOINT);
+
+    this.setState({
+      states,
+    });
+  }
+
+  async handlefilterCities() {
+    if (!this.props?.address.state.id) {
+      this.setState({
+        cities: [],
+      });
+      return;
+    }
+
+    let cities = await apiGet(process.env.REACT_APP_CITY_ENDPOINT, {
+      state: this.props?.address.state.id,
+    });
+    this.setState({
+      cities,
+    });
+  }
+
   render() {
     return (
       <Form.Row>
@@ -54,23 +87,20 @@ export default class AddressForm extends Component {
         <Form.Group as={Col} md={4}>
           <SSSelect
             label="Estado"
-            name={`${this.props.root}.state`}
-            items={[
-              { code: 1, description: "São Paulo" },
-              { code: 2, description: "Amazonas" },
-            ]}
-            value={this.props?.client?.genre || ""}
-            onChange={this.props.onChange}
+            name={`${this.props.root}.state.id`}
+            items={this.state.states}
+            value={this.props?.address?.state?.id || ""}
+            onChange={(event) => {
+              this.props.onChange(event);
+              this.handlefilterCities();
+            }}
           />
         </Form.Group>
         <Form.Group as={Col} md={4}>
           <SSSelect
             label="Cidade"
-            name={`${this.props.root}.city`}
-            items={[
-              { code: 1, description: "Mogi das Cruzes" },
-              { code: 2, description: "Arujá" },
-            ]}
+            name={`${this.props.root}.city.id`}
+            items={this.state.cities}
             value={this.props?.address?.city?.id || ""}
             onChange={this.props.onChange}
           />

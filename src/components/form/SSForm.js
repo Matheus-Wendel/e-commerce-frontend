@@ -16,6 +16,7 @@ export default class SSForm extends Component {
       <Form
         noValidate
         onSubmit={this.props?.onSubmit || this.handlePreventDefaut}
+        validated={this.props.hasError}
         {...rest}
       >
         {children}

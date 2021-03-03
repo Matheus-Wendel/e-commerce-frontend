@@ -56,7 +56,7 @@ export default class App extends Component {
 
   render() {
     return (
-      <BrowserRouter basename={process.env.PUBLIC_URL}>
+      <BrowserRouter>
         <Switch>
           <this.PublicRoute
             path="/"

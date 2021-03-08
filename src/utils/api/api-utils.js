@@ -55,6 +55,50 @@ export async function apiPost(endpoint, data = {}) {
     throw error;
   }
 }
+export async function apiPut(endpoint, data = {}) {
+  const loggedUser = JSON.parse(localStorage.getItem("user")) ?? "";
+  let headers = {};
+  if (loggedUser) {
+    headers = {
+      Authorization: loggedUser.Authorization,
+    };
+  }
+  try {
+    let requestUrl = host + endpoint;
+
+    let response = await api.put(requestUrl, JSON.stringify(data), {
+      headers,
+    });
+    if (response.status >= 400) {
+      throw response.data;
+    }
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+}
+export async function apiDelete(endpoint, id) {
+  const loggedUser = JSON.parse(localStorage.getItem("user")) ?? "";
+  let headers = {};
+  if (loggedUser) {
+    headers = {
+      Authorization: loggedUser.Authorization,
+    };
+  }
+  try {
+    let requestUrl = host + endpoint + "/" + id;
+
+    let response = await api.delete(requestUrl, {
+      headers,
+    });
+    if (response.status >= 400) {
+      throw response.data;
+    }
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+}
 export async function apiLogin(data = {}) {
   try {
     let requestUrl = host + process.env.REACT_APP_LOGIN_ENDPOINT;

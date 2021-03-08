@@ -25,7 +25,6 @@ export default class SSNavbar extends Component {
 
   render() {
     const { loggedUser, authInfo } = this.state;
-    console.log(loggedUser);
     return (
       <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark" fixed="top">
         <Navbar.Brand href="/">
@@ -37,8 +36,22 @@ export default class SSNavbar extends Component {
           <Nav className="mr-auto">
             {authInfo?.Permission === "CLIENT" && (
               <>
+                <>
+                  <NavDropdown title="Meus Dados">
+                    <NavDropdown.Item href="/deliveryAddresses">
+                      Endereços de envio
+                    </NavDropdown.Item>
+                    <NavDropdown.Item href="/creditCards">
+                      Cartões de crédito
+                    </NavDropdown.Item>
+                    <NavDropdown.Item href="/myInfo">
+                      Dados de usuário
+                    </NavDropdown.Item>
+                    <NavDropdown.Divider />
+                    <NavDropdown.Item href="#nada">Outros</NavDropdown.Item>
+                  </NavDropdown>
+                </>
                 <Nav.Link href="#features">Minhas compras</Nav.Link>
-                <Nav.Link href="#pricing">Meus dados</Nav.Link>
               </>
             )}
             {authInfo?.Permission === "EMPLOYEE" && (

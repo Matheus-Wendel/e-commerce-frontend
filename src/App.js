@@ -1,20 +1,16 @@
 import React, { Component } from "react";
-
-import disc from "./views/disc/disc";
-
-import genre from "./views/genre/genre";
-
+import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
 import artist from "./views/artist/artist";
-
 import cart from "./views/cart/cart";
 
-import signUp from "./views/signUp/signUp";
-
-import login from "./views/login/login";
-
+import disc from "./views/disc/disc";
+import genre from "./views/genre/genre";
 import home from "./views/home/home";
-
-import { Route, Redirect, BrowserRouter, Switch } from "react-router-dom";
+import login from "./views/login/login";
+import signUp from "./views/signUp/signUp";
+import clientDeliveryAdress from "./views/client-delivery-adress/client-delivery-adress";
+import clientUserData from "./views/client-user-data/client-user-data";
+import clientCreditCard from "./views/client-credit-card/client-credit-card";
 
 export default class App extends Component {
   constructor(props) {
@@ -99,6 +95,24 @@ export default class App extends Component {
             //authed={this.state.isLoggedIn}
             exact
             component={disc}
+          />
+          <this.PublicRoute
+            path="/deliveryAddresses"
+            //authed={this.state.isLoggedIn}
+            exact
+            component={clientDeliveryAdress}
+          />
+          <this.PublicRoute
+            path="/myInfo"
+            //authed={this.state.isLoggedIn}
+            exact
+            component={clientUserData}
+          />
+          <this.PublicRoute
+            path="/creditCards"
+            //authed={this.state.isLoggedIn}
+            exact
+            component={clientCreditCard}
           />
 
           <this.NotFoundRoute //authed={this.state.isLoggedIn}

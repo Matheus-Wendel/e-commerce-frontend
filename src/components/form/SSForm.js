@@ -2,7 +2,11 @@ import React, { Component } from "react";
 import { Button, Col, Form } from "react-bootstrap";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faStopCircle, faCompactDisc } from "@fortawesome/free-solid-svg-icons";
+import {
+  faStopCircle,
+  faCompactDisc,
+  faTrashAlt,
+} from "@fortawesome/free-solid-svg-icons";
 
 export default class SSForm extends Component {
   async handlePreventDefaut(event) {
@@ -10,7 +14,7 @@ export default class SSForm extends Component {
     event.stopPropagation();
   }
   render() {
-    const { children, ...rest } = this.props;
+    const { children, onDelete, ...rest } = this.props;
 
     return (
       <Form
@@ -39,7 +43,6 @@ export default class SSForm extends Component {
           </Col>
           <Col md={3}>
             <Button
-              href="/"
               variant="secondary"
               block
               disabled={this.props?.disabled}
@@ -52,6 +55,19 @@ export default class SSForm extends Component {
               Cancelar
             </Button>
           </Col>
+          {this.props.allowDelete && (
+            <Col md={3}>
+              <Button
+                variant="danger"
+                block
+                disabled={this.props?.disabled}
+                onClick={this.props?.onDelete || this.handlePreventDefaut}
+              >
+                <FontAwesomeIcon className="mr-2" icon={faTrashAlt} />
+                {this.props?.customDeleteText || "Excluir"}
+              </Button>
+            </Col>
+          )}
         </Form.Row>
       </Form>
     );

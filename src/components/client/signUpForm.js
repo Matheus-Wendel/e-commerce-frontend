@@ -13,7 +13,6 @@ export default class SignUpForm extends Component {
             name={`${this.props.root}.name`}
             value={this.props?.client?.name || ""}
             onChange={this.props.onChange}
-            required
           />
         </Form.Group>
         <Form.Group as={Col} md={3}>
@@ -22,7 +21,6 @@ export default class SignUpForm extends Component {
             name={`${this.props.root}.cpf`}
             value={this.props?.client?.cpf || ""}
             onChange={this.props.onChange}
-            required
           />
         </Form.Group>
         <Form.Group as={Col} md={2}>
@@ -32,7 +30,6 @@ export default class SignUpForm extends Component {
             type="number"
             value={this.props?.client?.telephone || ""}
             onChange={this.props.onChange}
-            required
           />
         </Form.Group>
         <Form.Group as={Col} md={2}>
@@ -45,7 +42,6 @@ export default class SignUpForm extends Component {
             ]}
             value={this.props?.client?.genre || ""}
             onChange={this.props.onChange}
-            required
           />
         </Form.Group>
 
@@ -55,7 +51,6 @@ export default class SignUpForm extends Component {
             name={`${this.props.root}.user.email`}
             value={this.props?.client?.user?.email || ""}
             onChange={this.props.onChange}
-            required
           />
         </Form.Group>
         <Form.Group as={Col} md={4}>
@@ -65,7 +60,6 @@ export default class SignUpForm extends Component {
             type="password"
             value={this.props?.client?.user?.password || ""}
             onChange={this.props.onChange}
-            required
           />
         </Form.Group>
       </Form.Row>

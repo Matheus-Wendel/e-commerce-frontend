@@ -32,3 +32,17 @@ export function updateStateValue(state, path, value) {
   state[path[i]] = value;
   return { [path[0]]: root };
 }
+
+export function alertMessageUtil(
+  messages = [],
+  show = false,
+  title = "",
+  variant = ""
+) {
+  return {
+    messages,
+    show,
+    title,
+    variant,
+  };
+}

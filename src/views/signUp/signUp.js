@@ -102,14 +102,14 @@ export default class SignUp extends Component {
                     onChange={this.handleInputChange.bind(this)}
                   />
                   <hr />
-                  <h4>Endereço de entrega</h4>
+                  <h4>Endereço de cobrança</h4>
                   <AddressForm
                     root="client.billingAddress"
                     address={this.state.client.billingAddress}
                     onChange={this.handleInputChange.bind(this)}
                   />
                   <hr />
-                  <h4>Endereço de Cobrança</h4>
+                  <h4>Endereço de entrega</h4>
                   <AddressForm
                     root="client.deliveryAddresses"
                     address={this.state.client.deliveryAddresses}

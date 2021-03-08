@@ -14,6 +14,7 @@ export default class SSSelect extends Component {
           as="select"
           onChange={this.props.onChange}
           className="form-control-sm"
+          value={this.props.value}
           name={this.props.name}
         >
           <option value="">{this.props.placeholder || "Selecione..."}</option>

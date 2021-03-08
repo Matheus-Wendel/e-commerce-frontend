@@ -34,6 +34,24 @@ export default class Login extends Component {
         alertTitle: "Sucesso",
       });
     }
+    if (status["?status"] == "atualizado") {
+      this.setState({
+        showAlert: true,
+        messages: [
+          "Atualização de dados realizado com successo, faça login novamente para continuar",
+        ],
+        alertVariant: "success",
+        alertTitle: "Sucesso",
+      });
+    }
+    if (status["?status"] == "desativado") {
+      this.setState({
+        showAlert: true,
+        messages: ["Usuario desativado com sucesso"],
+        alertVariant: "success",
+        alertTitle: "Sucesso",
+      });
+    }
   }
 
   async handleInputChange(event) {
@@ -67,20 +85,24 @@ export default class Login extends Component {
       await apiLogin(user);
       window.location.href = "/";
     } catch (error) {
-      if (error.response?.data?.error) {
-        this.setState(() => ({
-          errorMessages: error.response?.data?.error.split(";;"),
+      if (error.response?.status == 403) {
+        this.setState({
           showAlert: true,
-        }));
+          messages: ["Informações incorretas"],
+          alertVariant: "",
+          alertTitle: "",
+        });
         return;
       }
       if (error.response?.data?.message) {
-        this.setState(() => ({
-          errorMessages: [
+        this.setState({
+          showAlert: true,
+          messages: [
             `${error.response?.data.error} : ${error.response?.data.message}`,
           ],
-          showAlert: true,
-        }));
+          alertVariant: "",
+          alertTitle: "",
+        });
         return;
       }
     }

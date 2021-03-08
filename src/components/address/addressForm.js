@@ -20,9 +20,13 @@ export default class AddressForm extends Component {
       states,
     });
   }
-
+  async componentDidUpdate(prevProp) {
+    if (this.props?.address?.state?.id != prevProp?.address?.state?.id) {
+      await this.handlefilterCities();
+    }
+  }
   async handlefilterCities() {
-    if (!this.props?.address.state.id) {
+    if (!this.props?.address?.state?.id) {
       this.setState({
         cities: [],
       });

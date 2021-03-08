@@ -12,7 +12,7 @@ export default class Home extends Component {
     this.state = {};
   }
   componentDidMount() {
-    console.log(JSON.parse(localStorage.getItem("user")));
+    // console.log(JSON.parse(localStorage.getItem("user")));
   }
   render() {
     return (

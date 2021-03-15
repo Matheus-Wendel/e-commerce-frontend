@@ -47,26 +47,36 @@ export default class SSNavbar extends Component {
                     <NavDropdown.Item href="/myInfo">
                       Dados de usuário
                     </NavDropdown.Item>
-                    <NavDropdown.Divider />
-                    <NavDropdown.Item href="#nada">Outros</NavDropdown.Item>
                   </NavDropdown>
                 </>
-                <Nav.Link href="#features">Minhas compras</Nav.Link>
+                <Nav.Link href="/myPurchases">Minhas compras</Nav.Link>
               </>
             )}
             {authInfo?.Permission === "EMPLOYEE" && (
               <>
-                <NavDropdown
-                  title="Administrativo"
-                  id="collasible-nav-dropdown"
-                >
+                <NavDropdown title="Cadastro" id="collasible-nav-dropdown">
                   <NavDropdown.Item href="/artist">Artistas</NavDropdown.Item>
                   <NavDropdown.Item href="/genres">Gêneros</NavDropdown.Item>
+                  <NavDropdown.Item href="/disc">Discos</NavDropdown.Item>
                   <NavDropdown.Divider />
-                  <NavDropdown.Item href="/disc">
-                    Cadastro de discos
+                  <NavDropdown.Item href="/newEmployees">
+                    Usuarios
                   </NavDropdown.Item>
                 </NavDropdown>
+                <NavDropdown title="Preço" id="collasible-nav-dropdown">
+                  <NavDropdown.Item href="/pricing">
+                    Precificação
+                  </NavDropdown.Item>
+                  <NavDropdown.Item href="/sale">Promoções</NavDropdown.Item>
+                </NavDropdown>
+                <NavDropdown title="Aprovar" id="collasible-nav-dropdown">
+                  <NavDropdown.Item href="/saleAccept">
+                    Precificação
+                  </NavDropdown.Item>
+                  <NavDropdown.Item href="/sale">Promoções</NavDropdown.Item>
+                </NavDropdown>
+                <Nav.Link href="/exchangeManagement">Trocas</Nav.Link>
+                <Nav.Link href="/stock">Estoque</Nav.Link>
               </>
             )}
           </Nav>

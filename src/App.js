@@ -11,6 +11,13 @@ import signUp from "./views/signUp/signUp";
 import clientDeliveryAdress from "./views/client-delivery-adress/client-delivery-adress";
 import clientUserData from "./views/client-user-data/client-user-data";
 import clientCreditCard from "./views/client-credit-card/client-credit-card";
+import ClientPurchases from "./views/client-purchases/client-purchases";
+import EmployeeRegistration from "./views/employee/EmployeeRegistration";
+import Exchanges from "./views/exchanges/Exchanges";
+import Pricing from "./views/pricing/Pricing";
+import Stock from "./views/stock/Stock";
+import Sale from "./views/sale/Sale";
+import SaleAccept from "./views/sale/SaleAccept";
 
 export default class App extends Component {
   constructor(props) {
@@ -113,6 +120,48 @@ export default class App extends Component {
             //authed={this.state.isLoggedIn}
             exact
             component={clientCreditCard}
+          />
+          <this.PublicRoute
+            path="/myPurchases"
+            //authed={this.state.isLoggedIn}
+            exact
+            component={ClientPurchases}
+          />
+          <this.PublicRoute
+            path="/newEmployees"
+            //authed={this.state.isLoggedIn}
+            exact
+            component={EmployeeRegistration}
+          />
+          <this.PublicRoute
+            path="/exchangeManagement"
+            //authed={this.state.isLoggedIn}
+            exact
+            component={Exchanges}
+          />
+          <this.PublicRoute
+            path="/pricing"
+            //authed={this.state.isLoggedIn}
+            exact
+            component={Pricing}
+          />
+          <this.PublicRoute
+            path="/stock"
+            //authed={this.state.isLoggedIn}
+            exact
+            component={Stock}
+          />
+          <this.PublicRoute
+            path="/sale"
+            //authed={this.state.isLoggedIn}
+            exact
+            component={Sale}
+          />
+          <this.PublicRoute
+            path="/saleAccept"
+            //authed={this.state.isLoggedIn}
+            exact
+            component={SaleAccept}
           />
 
           <this.NotFoundRoute //authed={this.state.isLoggedIn}

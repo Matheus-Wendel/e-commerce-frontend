@@ -26,7 +26,7 @@ export default class Home extends Component {
                 <option>Selecione a categoria</option>
                 <option>Artista</option>
                 <option>Gravadora</option>
-                <option>Album</option>
+                <option>Álbum</option>
               </Form.Control>
               <br />
             </Form.Group>

@@ -22,7 +22,7 @@ export default class SSTable extends Component {
           wrapperClasses="table-responsive"
           hover
           bootstrap4={true}
-          noDataIndication="Sem resultados."
+          noDataIndication={this.props.noDataIndication || "Sem resultados."}
           keyField="id"
           data={this.props?.data || []}
           columns={this.props?.columns}

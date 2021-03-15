@@ -39,7 +39,7 @@ export default class SSCatalog extends Component {
             <Card.Body>
               <Card.Title>{`${product.name} ${i + 1}`}</Card.Title>
               <Card.Text>
-                <strong>R$:{product.price}</strong>
+                <strong>R${product.price}</strong>
                 {/* Some quick example text to build on the card title and make up
                 the bulk of the card's content. */}
               </Card.Text>

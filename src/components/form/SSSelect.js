@@ -16,6 +16,7 @@ export default class SSSelect extends Component {
           className="form-control-sm"
           value={this.props.value}
           name={this.props.name}
+          disabled={this.props.disabled}
         >
           <option value="">{this.props.placeholder || "Selecione..."}</option>
           {this.props.items.length &&

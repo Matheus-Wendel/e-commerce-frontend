@@ -1,6 +1,4 @@
 import React, { Component } from "react";
-import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
-import { srtGenerator } from "../../utils/utils";
 import SSTable from "../table/SSTable";
 
 export default class AddressTable extends Component {

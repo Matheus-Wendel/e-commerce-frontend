@@ -1,10 +1,8 @@
 import { Component } from "react";
-import { Card, Col, Container, Form } from "react-bootstrap";
-import Layout from "../../layout/Layout";
-import SsCarousel from "../../components/carrousel/SSCarousel";
+import { Col, Container, Form } from "react-bootstrap";
 import SSCarousel from "../../components/carrousel/SSCarousel";
 import SsCatalog from "../../components/catalog/SSCatalog";
-import SSForm from "../../components/form/SSForm";
+import Layout from "../../layout/Layout";
 
 export default class Home extends Component {
   constructor(props) {

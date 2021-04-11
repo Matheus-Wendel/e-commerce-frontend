@@ -7,7 +7,7 @@ export default class SignUpForm extends Component {
   render() {
     return (
       <Form.Row>
-        <Form.Group as={Col} md={5}>
+        <Form.Group as={Col} md={5} sm={12}>
           <SSInput
             label="Nome completo"
             name={`${this.props.root}.name`}

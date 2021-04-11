@@ -1,35 +1,83 @@
-import {
-  faCompactDisc,
-  faCreditCard,
-  faPlus,
-  faSync,
-  faUndo,
-  faWallet,
-} from "@fortawesome/free-solid-svg-icons";
+import { faCompactDisc, faWallet } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import clone from "clone";
 import React, { Component } from "react";
-import {
-  Button,
-  Card,
-  Col,
-  Container,
-  FormControl,
-  InputGroup,
-  Row,
-} from "react-bootstrap";
+import { Button, Card, Col, Container, Row } from "react-bootstrap";
+import SSAlert from "../../components/alert/SSalert";
 import CartItems from "../../components/cart/cartItems";
-import SSSelect from "../../components/form/SSSelect";
 import Layout from "../../layout/Layout";
+import { apiDelete, apiGet, apiPut } from "../../utils/api/api-utils";
+import {
+  alertMessageUtil,
+  handleErrorMessage,
+  handleSetAlert,
+} from "../../utils/utils";
 
-export default class SignUp extends Component {
+export default class Cart extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      cart: {},
+      alert: alertMessageUtil(),
+    };
   }
-  async handlePreventDefaut(event) {
-    event.preventDefault();
-    event.stopPropagation();
+
+  async componentDidMount() {
+    await this.fetchCart();
   }
+  async fetchCart() {
+    try {
+      let [cart] = await apiGet(process.env.REACT_APP_CART_ENDPOINT);
+
+      this.setState({
+        cart,
+      });
+    } catch (error) {
+      handleErrorMessage(this.setState.bind(this), error);
+    }
+  }
+
+  async handleDeletefromCart(id) {
+    try {
+      await apiDelete(process.env.REACT_APP_CART_PRODUCT_ENDPOINT, id);
+      handleSetAlert(
+        this.setState.bind(this),
+        ["Item excluido com sucesso"],
+        "Sucesso",
+        "success"
+      );
+      await this.fetchCart();
+    } catch (error) {
+      handleErrorMessage(this.setState.bind(this), error);
+    }
+  }
+
+  async handleUpdateCart() {
+    const { cart } = this.state;
+
+    try {
+      await apiPut(process.env.REACT_APP_CART_ENDPOINT, cart);
+    } catch (error) {
+      handleErrorMessage(this.setState.bind(this), error);
+    }
+  }
+
+  handleEditQuantity(index, value) {
+    const { cart } = this.state;
+
+    let cartClone = clone(cart);
+    let cartProductsClone = cartClone.cartProducts;
+    let item = cartProductsClone[index];
+
+    if (item.quantity + value === 0 || item.quantity + value > 99) {
+      return;
+    }
+    item.quantity += value;
+    this.setState({
+      cart: cartClone,
+    });
+  }
+
   render() {
     return (
       <Layout>
@@ -37,8 +85,15 @@ export default class SignUp extends Component {
           className="mt-5"
           style={{ height: "100vh", backgroundColor: "#191c1f" }}
         >
+          <SSAlert
+            showAlert={this.state.alert.show}
+            messages={this.state.alert.messages}
+            variant={this.state.alert.variant}
+            title={this.state.alert.title}
+          />
+
           <Row>
-            <Col md={8}>
+            <Col>
               <Card className="p-4" style={{ borderRadius: "0px" }}>
                 <Card.Body>
                   <Card.Title as="h1">
@@ -54,7 +109,13 @@ export default class SignUp extends Component {
                     className="p-0"
                     style={{ maxHeight: "50vh", overflowX: "hidden" }}
                   >
-                    <CartItems />
+                    <CartItems
+                      cartItems={this.state.cart?.cartProducts || []}
+                      handleEditQuantity={this.handleEditQuantity.bind(this)}
+                      handleDeletefromCart={this.handleDeletefromCart.bind(
+                        this
+                      )}
+                    />
                   </div>
                   <hr />
                   <Row>
@@ -64,13 +125,13 @@ export default class SignUp extends Component {
                         variant="primary"
                         block
                         disabled={this.props?.disabled}
-                        onClick={this.handlePreventDefaut}
+                        onClick={this.handleUpdateCart.bind(this)}
                       >
                         <FontAwesomeIcon className="mr-2" icon={faWallet} />
-                        Finalizar compra
+                        Pagamento e envio
                       </Button>
                     </Col>
-                    <Col md={4}>
+                    {/* <Col md={4}>
                       <Button
                         type="submit"
                         variant="secondary"
@@ -81,11 +142,11 @@ export default class SignUp extends Component {
                         <FontAwesomeIcon className="mr-2" icon={faSync} />
                         Atualizar Carrinho
                       </Button>
-                    </Col>
+                    </Col> 
                     <Col md={4}>
                       <Button
                         type="submit"
-                        variant="info"
+                        variant="secondary"
                         block
                         disabled={this.props?.disabled}
                         onClick={this.handlePreventDefaut}
@@ -94,10 +155,12 @@ export default class SignUp extends Component {
                         Restaurar
                       </Button>
                     </Col>
+                  */}
                   </Row>
                 </Card.Body>
               </Card>
             </Col>
+            {/* 
             <Col md={4}>
               <Card className="p-4" style={{ borderRadius: "0px" }}>
                 <Card.Body>
@@ -192,6 +255,7 @@ export default class SignUp extends Component {
                 </Card.Body>
               </Card>
             </Col>
+          */}
           </Row>
         </Container>
       </Layout>

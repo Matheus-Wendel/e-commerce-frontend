@@ -10,7 +10,7 @@ import SsInput from "../form/SSInput";
 
 export default class CartItems extends Component {
   render() {
-    const { cartItems } = this.props;
+    const { cartItems, showItemsOnly } = this.props;
     let cart = cartItems.map((item, i) => (
       <Row key={i}>
         <Card className="w-100">
@@ -36,40 +36,47 @@ export default class CartItems extends Component {
               <Col md={3}>
                 <div className="p-2">
                   <SsInput label="Quantidade" disabled value={item.quantity} />
-                  <Row className="mb-2">
-                    <Col md={6}>
+                  {!showItemsOnly && (
+                    <>
+                      <Row className="mb-2">
+                        <Col md={6}>
+                          <Button
+                            variant="secondary"
+                            block
+                            onClick={() => {
+                              this.props.handleEditQuantity(i, 1);
+                            }}
+                          >
+                            <FontAwesomeIcon icon={faPlus} className="" />
+                          </Button>
+                        </Col>
+                        <Col md={6}>
+                          <Button
+                            variant="secondary"
+                            block
+                            onClick={() => {
+                              this.props.handleEditQuantity(i, -1);
+                            }}
+                          >
+                            <FontAwesomeIcon icon={faMinus} className="" />
+                          </Button>
+                        </Col>
+                      </Row>
                       <Button
                         variant="secondary"
                         block
                         onClick={() => {
-                          this.props.handleEditQuantity(i, 1);
+                          this.props.handleDeletefromCart(item.id);
                         }}
                       >
-                        <FontAwesomeIcon icon={faPlus} className="" />
+                        <FontAwesomeIcon
+                          icon={faTimesCircle}
+                          className="mr-2"
+                        />
+                        Remover
                       </Button>
-                    </Col>
-                    <Col md={6}>
-                      <Button
-                        variant="secondary"
-                        block
-                        onClick={() => {
-                          this.props.handleEditQuantity(i, -1);
-                        }}
-                      >
-                        <FontAwesomeIcon icon={faMinus} className="" />
-                      </Button>
-                    </Col>
-                  </Row>
-                  <Button
-                    variant="secondary"
-                    block
-                    onClick={() => {
-                      this.props.handleDeletefromCart(item.id);
-                    }}
-                  >
-                    <FontAwesomeIcon icon={faTimesCircle} className="mr-2" />
-                    Remover
-                  </Button>
+                    </>
+                  )}
                 </div>
               </Col>
             </Row>

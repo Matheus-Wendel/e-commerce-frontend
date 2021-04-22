@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { Col, Form } from "react-bootstrap";
+import { apiGet } from "../../utils/api/api-utils";
 import SSInput from "../form/SSInput";
 import SSSelect from "../form/SSSelect";
-import { apiGet } from "../../utils/api/api-utils";
 
 export default class AddressForm extends Component {
   constructor(props) {
@@ -21,7 +21,7 @@ export default class AddressForm extends Component {
     });
   }
   async componentDidUpdate(prevProp) {
-    if (this.props?.address?.state?.id != prevProp?.address?.state?.id) {
+    if (this.props?.address?.state?.id !== prevProp?.address?.state?.id) {
       await this.handlefilterCities();
     }
   }
@@ -51,6 +51,7 @@ export default class AddressForm extends Component {
             placeholder="Casa, trabalho, etc..."
             value={this.props?.address?.description || ""}
             onChange={this.props.onChange}
+            disabled={this.props.disabled}
           />
         </Form.Group>
 
@@ -61,6 +62,7 @@ export default class AddressForm extends Component {
             placeholder="Rua, praça, via etc..."
             value={this.props?.address?.addressType || ""}
             onChange={this.props.onChange}
+            disabled={this.props.disabled}
           />
         </Form.Group>
         <Form.Group as={Col} md={4}>
@@ -69,6 +71,7 @@ export default class AddressForm extends Component {
             name={`${this.props.root}.addressDescription`}
             value={this.props?.address?.addressDescription || ""}
             onChange={this.props.onChange}
+            disabled={this.props.disabled}
           />
         </Form.Group>
         <Form.Group as={Col} md={2}>
@@ -77,6 +80,7 @@ export default class AddressForm extends Component {
             name={`${this.props.root}.number`}
             value={this.props?.address?.number || ""}
             onChange={this.props.onChange}
+            disabled={this.props.disabled}
           />
         </Form.Group>
         <Form.Group as={Col} md={4}>
@@ -85,6 +89,7 @@ export default class AddressForm extends Component {
             name={`${this.props.root}.district`}
             value={this.props?.address?.district || ""}
             onChange={this.props.onChange}
+            disabled={this.props.disabled}
           />
         </Form.Group>
 
@@ -98,6 +103,7 @@ export default class AddressForm extends Component {
               this.props.onChange(event);
               this.handlefilterCities();
             }}
+            disabled={this.props.disabled}
           />
         </Form.Group>
         <Form.Group as={Col} md={4}>
@@ -107,6 +113,7 @@ export default class AddressForm extends Component {
             items={this.state.cities}
             value={this.props?.address?.city?.id || ""}
             onChange={this.props.onChange}
+            disabled={this.props.disabled}
           />
         </Form.Group>
         <Form.Group as={Col} md={4}>
@@ -115,6 +122,7 @@ export default class AddressForm extends Component {
             name={`${this.props.root}.observations`}
             value={this.props?.address?.observations || ""}
             onChange={this.props.onChange}
+            disabled={this.props.disabled}
           />
         </Form.Group>
       </Form.Row>

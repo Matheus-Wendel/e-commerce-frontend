@@ -1,8 +1,7 @@
 import React, { Component } from "react";
-import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
 import SSTable from "../table/SSTable";
 
-export default class CreditCardTable extends Component {
+export default class CouponTable extends Component {
   render() {
     const rowEvents = {
       onClick: (e, column, columnIndex, row, rowIndex) => {
@@ -16,18 +15,18 @@ export default class CreditCardTable extends Component {
         events: rowEvents,
       },
       {
-        dataField: "name",
-        text: "Nome do titular",
+        dataField: "value",
+        text: "Valor",
+        events: rowEvents,
+      },
+      {
+        dataField: "active",
+        text: "Ativo",
         events: rowEvents,
       },
       {
         dataField: "expirationDate",
-        text: "Validade",
-        events: rowEvents,
-      },
-      {
-        dataField: "cardBrand.description",
-        text: "Bandeira",
+        text: "Data de expiração",
         events: rowEvents,
       },
     ];

@@ -18,6 +18,7 @@ export default class Cart extends Component {
     super(props);
     this.state = {
       cart: {},
+      total: 0,
       alert: alertMessageUtil(),
     };
   }
@@ -28,9 +29,15 @@ export default class Cart extends Component {
   async fetchCart() {
     try {
       let [cart] = await apiGet(process.env.REACT_APP_CART_ENDPOINT);
-
+      let total = 0;
+      if (cart?.cartProducts.length) {
+        total = cart.cartProducts
+          .map((cp) => cp.quantity * cp.disc.value)
+          .reduce((x, y) => x + y);
+      }
       this.setState({
         cart,
+        total,
       });
     } catch (error) {
       handleErrorMessage(this.setState.bind(this), error);
@@ -55,8 +62,10 @@ export default class Cart extends Component {
   async handleUpdateCart() {
     const { cart } = this.state;
 
+    // console.log(Object.values(data_sample).map((x) => x.data_needed_to_sum_up).reduce((x, y) => x + y));
     try {
       await apiPut(process.env.REACT_APP_CART_ENDPOINT, cart);
+      window.location.href = "/paymentAndAddress";
     } catch (error) {
       handleErrorMessage(this.setState.bind(this), error);
     }
@@ -119,43 +128,21 @@ export default class Cart extends Component {
                   </div>
                   <hr />
                   <Row>
-                    <Col md={4}>
+                    <Col md={6}>
                       <Button
                         type="submit"
                         variant="primary"
                         block
-                        disabled={this.props?.disabled}
+                        disabled={!this.state.cart?.cartProducts?.length}
                         onClick={this.handleUpdateCart.bind(this)}
                       >
                         <FontAwesomeIcon className="mr-2" icon={faWallet} />
                         Pagamento e envio
                       </Button>
                     </Col>
-                    {/* <Col md={4}>
-                      <Button
-                        type="submit"
-                        variant="secondary"
-                        block
-                        disabled={this.props?.disabled}
-                        onClick={this.handlePreventDefaut}
-                      >
-                        <FontAwesomeIcon className="mr-2" icon={faSync} />
-                        Atualizar Carrinho
-                      </Button>
-                    </Col> 
-                    <Col md={4}>
-                      <Button
-                        type="submit"
-                        variant="secondary"
-                        block
-                        disabled={this.props?.disabled}
-                        onClick={this.handlePreventDefaut}
-                      >
-                        <FontAwesomeIcon className="mr-2" icon={faUndo} />
-                        Restaurar
-                      </Button>
+                    <Col md={6}>
+                      <h3>Total: R${this.state.total}</h3>
                     </Col>
-                  */}
                   </Row>
                 </Card.Body>
               </Card>

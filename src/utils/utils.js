@@ -59,6 +59,7 @@ export function handleErrorMessage(setState, error) {
     });
     return;
   }
+
   if (error.response?.data?.message) {
     setState({
       alert: alertMessageUtil(
@@ -67,6 +68,12 @@ export function handleErrorMessage(setState, error) {
       ),
     });
 
+    return;
+  }
+  if (error.message) {
+    setState({
+      alert: alertMessageUtil([error.message], true),
+    });
     return;
   }
 }

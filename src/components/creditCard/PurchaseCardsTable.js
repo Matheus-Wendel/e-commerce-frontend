@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
 import SSTable from "../table/SSTable";
 
-export default class CreditCardTable extends Component {
+export default class PurchaseCardsTable extends Component {
   render() {
     const rowEvents = {
       onClick: (e, column, columnIndex, row, rowIndex) => {
@@ -11,22 +11,22 @@ export default class CreditCardTable extends Component {
     };
     const columns = [
       {
-        dataField: "id",
+        dataField: "creditCard.id",
         text: "ID",
         events: rowEvents,
       },
       {
-        dataField: "name",
-        text: "Nome do titular",
+        dataField: "value",
+        text: "Valor nesse cartão",
         events: rowEvents,
       },
       {
-        dataField: "expirationDate",
+        dataField: "creditCard.expirationDate",
         text: "Validade",
         events: rowEvents,
       },
       {
-        dataField: "cardBrand.description",
+        dataField: "creditCard.cardBrand.description",
         text: "Bandeira",
         events: rowEvents,
       },

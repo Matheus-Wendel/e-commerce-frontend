@@ -120,9 +120,8 @@ export default class PaymentAndAddress extends Component {
     };
 
     try {
-      let result = await apiPost(process.env.REACT_APP_PURCHASE_ENDPOINT, body);
-      console.log(result);
-      // window.location.href = "/myPurchases";
+      await apiPost(process.env.REACT_APP_PURCHASE_ENDPOINT, body);
+      window.location.href = "/myPurchases?compra=finalizada";
     } catch (error) {
       handleErrorMessage(this.setState.bind(this), error);
     }

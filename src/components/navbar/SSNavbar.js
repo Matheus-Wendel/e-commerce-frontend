@@ -50,6 +50,7 @@ export default class SSNavbar extends Component {
                   </NavDropdown>
                 </>
                 <Nav.Link href="/myPurchases">Minhas compras</Nav.Link>
+                <Nav.Link href="/myCoupons">Meus cupons</Nav.Link>
               </>
             )}
             {authInfo?.Permission === "EMPLOYEE" && (
@@ -76,6 +77,7 @@ export default class SSNavbar extends Component {
                   <NavDropdown.Item href="/sale">Promoções</NavDropdown.Item>
                 </NavDropdown>
                 <Nav.Link href="/exchangeManagement">Trocas</Nav.Link>
+                <Nav.Link href="/purchaseControl">Compras</Nav.Link>
                 <Nav.Link href="/stock">Estoque</Nav.Link>
               </>
             )}

@@ -9,7 +9,7 @@ import PurchaseItemDevolutionForm from "../../components/purchases/PurchaseItemD
 import PurchaseItemsTable from "../../components/purchases/PurchaseItemsTable";
 import PurchaseTable from "../../components/purchases/PurchaseTable";
 import SSFormLayout from "../../layout/SSFormLayout";
-import { apiGet } from "../../utils/api/api-utils";
+import { apiGet, apiPost } from "../../utils/api/api-utils";
 import {
   alertMessageUtil,
   handleErrorMessage,
@@ -25,6 +25,8 @@ export default class ClientPurchases extends Component {
       alert: alertMessageUtil(),
       purchaseItems: [],
       purchases: [],
+      purchaseItem: {},
+      selectedTrade: false,
     };
   }
   async componentDidMount() {
@@ -41,12 +43,34 @@ export default class ClientPurchases extends Component {
     }
   }
 
+  async handleRequestTrade(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    try {
+      const { purchaseItem } = this.state;
+      let body = { purchaseItem: { id: purchaseItem.id } };
+      await apiPost(process.env.REACT_APP_TRADE_ENDPOINT, body);
+      await this.fetchPurchases();
+
+      this.handleClear();
+      handleSetAlert(
+        this.setState.bind(this),
+        ["Troca solicitada com sucesso"],
+        "sucesso",
+        "success"
+      );
+    } catch (error) {
+      handleErrorMessage(this.setState.bind(this), error);
+    }
+  }
   async fetchPurchases() {
     try {
       let purchases = await apiGet(process.env.REACT_APP_PURCHASE_ENDPOINT);
 
       this.setState({
         purchases,
+        purchaseItems: [],
       });
     } catch (error) {
       handleErrorMessage(this.setState.bind(this), error);
@@ -57,18 +81,27 @@ export default class ClientPurchases extends Component {
     event.stopPropagation();
   }
 
-  handleSelectedRow(row) {
+  handleSelectedPurchaseRow(row) {
     let selectedRow = clone(row);
 
     this.setState({
       purchaseItems: selectedRow.purchaseItems,
     });
   }
+  handleSelectedPurchaseItemRow(row) {
+    let selectedRow = clone(row);
+
+    console.log(selectedRow);
+    this.setState({
+      selectedTrade: true,
+      purchaseItem: selectedRow,
+    });
+  }
 
   handleClear() {
     this.setState({
-      creditCard: new CreditCardModel(),
-      isUpdate: false,
+      selectedTrade: false,
+      purchaseItem: {},
     });
   }
 
@@ -98,17 +131,18 @@ export default class ClientPurchases extends Component {
           <h3>Suas Compras</h3>
           <PurchaseTable
             data={this.state.purchases}
-            onRowSelect={this.handleSelectedRow.bind(this)}
+            onRowSelect={this.handleSelectedPurchaseRow.bind(this)}
           />
           <h3>Itens da compra</h3>
           <PurchaseItemsTable
             data={this.state.purchaseItems}
-            onRowSelect={this.handleSelectedRow.bind(this)}
+            onRowSelect={this.handleSelectedPurchaseItemRow.bind(this)}
           />
           <SSForm
-            onSubmit={this.handleInputChange.bind(this)}
+            onSubmit={this.handleRequestTrade.bind(this)}
             customSubmitText={"Solicitar Devolução"}
-            disabled
+            disabled={!this.state.selectedTrade}
+            onCancel={this.handleClear.bind(this)}
           >
             <PurchaseItemDevolutionForm
               root="purchaseItem"

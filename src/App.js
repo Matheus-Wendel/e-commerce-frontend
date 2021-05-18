@@ -19,6 +19,8 @@ import Stock from "./views/stock/Stock";
 import Sale from "./views/sale/Sale";
 import SaleAccept from "./views/sale/SaleAccept";
 import PaymentAndAddress from "./views/payment-address/PaymentAndAddress";
+import PurchasesControl from "./views/purchases-control/PurchasesControl";
+import ClientCoupons from "./views/client-coupons/client-coupons";
 
 export default class App extends Component {
   constructor(props) {
@@ -169,6 +171,18 @@ export default class App extends Component {
             //authed={this.state.isLoggedIn}
             exact
             component={PaymentAndAddress}
+          />
+          <this.PublicRoute
+            path="/purchaseControl"
+            //authed={this.state.isLoggedIn}
+            exact
+            component={PurchasesControl}
+          />
+          <this.PublicRoute
+            path="/myCoupons"
+            //authed={this.state.isLoggedIn}
+            exact
+            component={ClientCoupons}
           />
 
           <this.NotFoundRoute //authed={this.state.isLoggedIn}

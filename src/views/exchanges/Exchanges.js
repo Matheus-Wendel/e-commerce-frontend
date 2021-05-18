@@ -9,7 +9,13 @@ import SSForm from "../../components/form/SSForm";
 import SSSelect from "../../components/form/SSSelect";
 import PurchaseItemDevolutionForm from "../../components/purchases/PurchaseItemDevolutionForm";
 import SSFormLayout from "../../layout/SSFormLayout";
-import { alertMessageUtil, updateStateValue } from "../../utils/utils";
+import { apiGet, apiPut } from "../../utils/api/api-utils";
+import {
+  alertMessageUtil,
+  handleErrorMessage,
+  handleSetAlert,
+  updateStateValue,
+} from "../../utils/utils";
 import CreditCardModel from "./CreditCardModel";
 
 export default class Exchanges extends Component {
@@ -17,30 +23,87 @@ export default class Exchanges extends Component {
     super(props);
     this.state = {
       alert: alertMessageUtil(),
-      purchaseItems: [],
+      tradeRequests: [],
+      tradeRequest: {},
+      inExchangeTrades: [],
+      inExchangeTrade: {},
+      finishedTrades: [],
+      finishedTrade: {},
     };
   }
   async componentDidMount() {
-    // try {
-    //   await this.fetchCreditCards();
-    // } catch (error) {
-    //   this.handleSetMessages(
-    //     ["Não foi possivel carregar os seus cartões"],
-    //     true
-    //   );
-    // }
+    await this.fetchTradeRequests();
+    await this.fetchInExchangeTrades();
+    await this.fetchFinishedTrades();
   }
 
+  async fetchTradeRequests() {
+    try {
+      let tradeRequests = await apiGet(process.env.REACT_APP_TRADE_ENDPOINT, {
+        status: "REQUESTED",
+      });
+
+      console.log(tradeRequests);
+      this.setState({
+        tradeRequests,
+      });
+    } catch (error) {
+      handleErrorMessage(this.setState.bind(this), error);
+    }
+  }
+  async fetchInExchangeTrades() {
+    try {
+      let inExchangeTrades = await apiGet(
+        process.env.REACT_APP_TRADE_ENDPOINT,
+        { status: "IN_EXCHANGE" }
+      );
+      console.log(inExchangeTrades);
+
+      this.setState({
+        inExchangeTrades,
+      });
+    } catch (error) {
+      handleErrorMessage(this.setState.bind(this), error);
+    }
+  }
+  async fetchFinishedTrades() {
+    try {
+      let finishedTrades = await apiGet(process.env.REACT_APP_TRADE_ENDPOINT, {
+        status: "FINISHED",
+      });
+
+      console.log(finishedTrades);
+      this.setState({
+        finishedTrades,
+      });
+    } catch (error) {
+      handleErrorMessage(this.setState.bind(this), error);
+    }
+  }
   async handlePreventDefaut(event) {
     event.preventDefault();
     event.stopPropagation();
   }
 
-  handleSelectedRow(row) {
+  handleSelectedTradeRequestRow(row) {
     let selectedRow = clone(row);
 
     this.setState({
-      purchaseItems: selectedRow.purchaseItems,
+      tradeRequest: selectedRow,
+    });
+  }
+  handleSelectedInExchangeTradeRow(row) {
+    let selectedRow = clone(row);
+
+    this.setState({
+      inExchangeTrade: selectedRow,
+    });
+  }
+  handleSelectedFinishedTradeRow(row) {
+    let selectedRow = clone(row);
+
+    this.setState({
+      finishedTrade: selectedRow,
     });
   }
 
@@ -50,6 +113,52 @@ export default class Exchanges extends Component {
     }));
   }
 
+  async handleSubimitTradeRequest(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    try {
+      const { tradeRequest } = this.state;
+      await apiPut(process.env.REACT_APP_TRADE_ENDPOINT, tradeRequest);
+      await this.fetchTradeRequests();
+      await this.fetchInExchangeTrades();
+      this.setState({
+        tradeRequest: {},
+      });
+      handleSetAlert(
+        this.setState.bind(this),
+        ["Troca aceita com sucesso"],
+        "sucesso",
+        "success"
+      );
+    } catch (error) {
+      handleErrorMessage(this.setState.bind(this), error);
+    }
+  }
+  async handleSubimitinExchangeTrade(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    try {
+      const { inExchangeTrade } = this.state;
+      console.log(inExchangeTrade);
+      await apiPut(process.env.REACT_APP_TRADE_ENDPOINT, inExchangeTrade);
+      await this.fetchInExchangeTrades();
+      await this.fetchFinishedTrades();
+      this.setState({
+        inExchangeTrade: {},
+      });
+
+      handleSetAlert(
+        this.setState.bind(this),
+        ["Troca finalizada com sucesso"],
+        "sucesso",
+        "success"
+      );
+    } catch (error) {
+      handleErrorMessage(this.setState.bind(this), error);
+    }
+  }
   handleClear() {
     this.setState({
       creditCard: new CreditCardModel(),
@@ -81,50 +190,52 @@ export default class Exchanges extends Component {
           />
           <hr />
           <SSForm
-            onSubmit={this.handleInputChange.bind(this)}
+            onSubmit={this.handleSubimitTradeRequest.bind(this)}
             customSubmitText={"Aceitar solicitação"}
-            disabled
+            disabled={this.state.tradeRequest.id == null}
+            onCancel={() => {
+              this.setState({ tradeRequest: {} });
+            }}
           >
             <PurchaseItemDevolutionForm
               root="purchaseItem"
-              purchaseItem={this.state.purchaseItem}
+              purchaseItem={this.state.tradeRequest.purchaseItem}
             />
             <hr />
           </SSForm>
           <hr />
           <h3>Solicitações de troca</h3>
-          <ExchangesTable onRowSelect={this.handleSelectedRow.bind(this)} />
+          <ExchangesTable
+            data={this.state.tradeRequests}
+            onRowSelect={this.handleSelectedTradeRequestRow.bind(this)}
+          />
           <hr />
           <h3>Trocas Aceitas</h3>
           <SSForm
-            onSubmit={this.handleInputChange.bind(this)}
+            onSubmit={this.handleSubimitinExchangeTrade.bind(this)}
             customSubmitText={"Finalizar Troca"}
-            disabled
+            disabled={this.state.inExchangeTrade?.id == null}
+            onCancel={() => {
+              this.setState({ inExchangeTrade: {} });
+            }}
           >
+            <PurchaseItemDevolutionForm
+              root="purchaseItem"
+              purchaseItem={this.state.inExchangeTrade?.purchaseItem}
+            />
+            <hr />
             <Form.Row>
               <Form.Group as={Col} md={5}>
                 <SSSelect
                   label="Retornar ao estoque?"
-                  name={`employee.permission`}
+                  name={`inExchangeTrade.returnToStock`}
                   items={[
-                    { id: "S", description: "Sim" },
-                    { id: "N", description: "Não" },
+                    { id: true, description: "Sim" },
+                    { id: false, description: "Não" },
                   ]}
-                  value={this.state?.employee?.permission || ""}
-                  onChange={this.handleInputChange}
-                />
-              </Form.Group>
-              <Form.Group as={Col} md={5}>
-                <SSSelect
-                  label="Selecione o estoque"
-                  name={`employee.permission`}
-                  items={[
-                    { id: "EMPLOYEE", description: "Funcionario" },
-                    { id: "SALES_MANAGER", description: "Gerente de vendas" },
-                  ]}
-                  value={this.state?.employee?.permission || ""}
-                  onChange={this.handleInputChange}
-                  disabled
+                  value={this.state?.inExchangeTrade.returnToStock || ""}
+                  onChange={this.handleInputChange.bind(this)}
+                  required
                 />
               </Form.Group>
             </Form.Row>
@@ -132,7 +243,16 @@ export default class Exchanges extends Component {
           </SSForm>
           <hr />
           <h3>Trocas Aceitas</h3>
-          <ExchangesTable onRowSelect={this.handleSelectedRow.bind(this)} />
+          <ExchangesTable
+            data={this.state.inExchangeTrades}
+            onRowSelect={this.handleSelectedInExchangeTradeRow.bind(this)}
+          />
+          <hr />
+          <h3>Trocas Finalizadas</h3>
+          <ExchangesTable
+            data={this.state.finishedTrades}
+            onRowSelect={() => {}}
+          />
         </Card.Body>
       </SSFormLayout>
     );

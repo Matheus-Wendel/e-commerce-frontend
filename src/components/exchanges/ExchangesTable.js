@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { getTradeStatus } from "../../utils/utils";
 import SSTable from "../table/SSTable";
 
 export default class ExchangesTable extends Component {
@@ -8,22 +9,6 @@ export default class ExchangesTable extends Component {
         this.props.onRowSelect(row);
       },
     };
-    const requests = [
-      {
-        id: 1,
-        client: { cpf: "111.111.111-11" },
-        disc: { id: 1 },
-        requestDate: "01/01/2021",
-        status: "EM TROCA",
-      },
-      {
-        id: 2,
-        client: { cpf: "222.222.222-22" },
-        disc: { id: 2 },
-        requestDate: "01/01/2021",
-        status: "EM TROCA",
-      },
-    ];
 
     const columns = [
       {
@@ -37,7 +22,7 @@ export default class ExchangesTable extends Component {
         events: rowEvents,
       },
       {
-        dataField: "disc.id",
+        dataField: "purchaseItem.disc.id",
         text: "Id do disco",
         events: rowEvents,
       },
@@ -50,8 +35,11 @@ export default class ExchangesTable extends Component {
         dataField: "status",
         text: "Status da solicitação",
         events: rowEvents,
+        formatter: (cell, row, rowIndex, formatExtraData) => {
+          return getTradeStatus(cell);
+        },
       },
     ];
-    return <SSTable data={requests} columns={columns} />;
+    return <SSTable data={this.props.data} columns={columns} />;
   }
 }

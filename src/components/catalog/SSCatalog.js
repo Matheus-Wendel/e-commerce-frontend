@@ -1,12 +1,14 @@
-import React, { Component } from "react";
-import { Button, Card, Col, Nav, NavDropdown, Row } from "react-bootstrap";
-import Navbar from "react-bootstrap/Navbar";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCartPlus } from "@fortawesome/free-solid-svg-icons";
-import logo from "../.././logo.svg";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { Component } from "react";
+import { Button, Card, Col, Row } from "react-bootstrap";
 import "../../App.css";
 import { apiGet, apiPost } from "../../utils/api/api-utils";
-import { alertMessageUtil, handleErrorMessage } from "../../utils/utils";
+import {
+  alertMessageUtil,
+  handleErrorMessage,
+  handleSetAlert,
+} from "../../utils/utils";
 import SSAlert from "../alert/SSalert";
 export default class SSCatalog extends Component {
   constructor(props) {
@@ -25,13 +27,16 @@ export default class SSCatalog extends Component {
   }
   async handleAddToCart(disc) {
     try {
-      let response = await apiPost(
-        process.env.REACT_APP_ADD_CART_PRODUCT_ITEM_ENDPOINT,
-        { id: disc.id }
+      await apiPost(process.env.REACT_APP_ADD_CART_PRODUCT_ITEM_ENDPOINT, {
+        id: disc.id,
+      });
+      await apiGet(process.env.REACT_APP_CART_ENDPOINT);
+      handleSetAlert(
+        this.setState.bind(this),
+        [`${disc.name} Adicionado ao carrinho`],
+        "Sucesso",
+        "success"
       );
-      console.log(response);
-      let cart = await apiGet(process.env.REACT_APP_CART_ENDPOINT);
-      console.log(cart);
     } catch (error) {
       console.log(error);
       handleErrorMessage(this.setState.bind(this), error);

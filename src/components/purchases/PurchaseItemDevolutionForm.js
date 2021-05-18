@@ -12,7 +12,7 @@ export default class PurchaseItemDevolutionForm extends Component {
           <SSInput
             label="Nome do disco"
             name={`${this.props.root}.name`}
-            value={this.props?.disc?.name || ""}
+            value={this.props?.purchaseItem?.disc?.name || ""}
             disabled
           />
         </Form.Group>
@@ -21,7 +21,7 @@ export default class PurchaseItemDevolutionForm extends Component {
           <SSInput
             label="Valor"
             name={`${this.props.root}.value`}
-            value={this.props?.disc?.value || ""}
+            value={this.props?.purchaseItem?.value || ""}
             onChange={this.props.onChange}
             disabled
           />

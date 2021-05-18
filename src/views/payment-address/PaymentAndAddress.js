@@ -115,10 +115,11 @@ export default class PaymentAndAddress extends Component {
     let body = {
       tradeCoupons,
       promotionalCoupon,
-      purchaseCards,
+      purchaseCards: purchaseCards.map((item) => {
+        return { value: item.value, creditCard: { id: item.creditCard.id } };
+      }),
       deliveryAddress,
     };
-
     try {
       await apiPost(process.env.REACT_APP_PURCHASE_ENDPOINT, body);
       window.location.href = "/myPurchases?compra=finalizada";

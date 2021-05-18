@@ -22,6 +22,9 @@ export default class CouponTable extends Component {
       {
         dataField: "active",
         text: "Ativo",
+        formatter: (cell, row, rowIndex, formatExtraData) => {
+          return cell == true ? "SIM" : "NÂO";
+        },
         events: rowEvents,
       },
       {

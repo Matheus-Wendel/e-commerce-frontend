@@ -82,3 +82,32 @@ export function handleSetAlert(setState, messages, title, variant) {
     alert: alertMessageUtil(messages, true, title, variant),
   });
 }
+
+export function getPurchaseStatus(status) {
+  switch (status) {
+    case "PROCESSING":
+      return "EM PROCESSAMENTO";
+    case "ACCEPTED":
+      return "ACEITO";
+    case "IN_TRANSIT":
+      return "EM TRANSITO";
+    case "DELIVERED":
+      return "ENTREGUE";
+
+    default:
+      return status;
+  }
+}
+export function getTradeStatus(status) {
+  switch (status) {
+    case "REQUESTED":
+      return "SOLICITADA";
+    case "IN_EXCHANGE":
+      return "EM TROCA";
+    case "FINISHED":
+      return "FINALIZADA";
+
+    default:
+      return status;
+  }
+}

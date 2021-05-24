@@ -58,6 +58,9 @@ export default class SSNavbar extends Component {
                 <NavDropdown title="Cadastro" id="collasible-nav-dropdown">
                   <NavDropdown.Item href="/artist">Artistas</NavDropdown.Item>
                   <NavDropdown.Item href="/genres">Gêneros</NavDropdown.Item>
+                  <NavDropdown.Item href="/recorder">
+                    Gravadoras
+                  </NavDropdown.Item>
                   <NavDropdown.Item href="/disc">Discos</NavDropdown.Item>
                   <NavDropdown.Divider />
                   <NavDropdown.Item href="/newEmployees">
@@ -70,12 +73,12 @@ export default class SSNavbar extends Component {
                   </NavDropdown.Item>
                   <NavDropdown.Item href="/sale">Promoções</NavDropdown.Item>
                 </NavDropdown>
-                <NavDropdown title="Aprovar" id="collasible-nav-dropdown">
+                {/* <NavDropdown title="Aprovar" id="collasible-nav-dropdown">
                   <NavDropdown.Item href="/saleAccept">
                     Precificação
                   </NavDropdown.Item>
                   <NavDropdown.Item href="/sale">Promoções</NavDropdown.Item>
-                </NavDropdown>
+                </NavDropdown> */}
                 <Nav.Link href="/exchangeManagement">Trocas</Nav.Link>
                 <Nav.Link href="/purchaseControl">Compras</Nav.Link>
                 <Nav.Link href="/stock">Estoque</Nav.Link>

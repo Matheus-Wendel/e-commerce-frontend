@@ -111,3 +111,7 @@ export function getTradeStatus(status) {
       return status;
   }
 }
+
+export function formatPercentageValue(value) {
+  return `${value * 100}%`;
+}

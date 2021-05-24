@@ -10,7 +10,7 @@ export default class Layout extends Component {
           style={{
             display: "flex",
             flexDirection: "column",
-
+            minHeight: "100vh",
             backgroundColor: "#191c1f",
           }}
         >
@@ -18,7 +18,7 @@ export default class Layout extends Component {
             <SSNavbar />
           </header>
           <main style={{ flexGrow: "1" }}>{children}</main>
-          <footer className="p-2 container-fluid d-flex justify-content-center align-items-center">
+          <footer style={{ color: "white" }} className="p-2 ">
             <p className="text-center m-0">SoundSource</p>
             <p className="text-center m-0">Matheus Wendel</p>
             <p className="text-center m-0">Fatec Mogi das Cruzes 2021</p>

@@ -9,20 +9,7 @@ export default class StockTable extends Component {
         this.props.onRowSelect(row);
       },
     };
-    const stocks = [
-      {
-        id: 1,
-        quantity: 50,
-        costPrice: 600.0,
-        purchaceDate: "10/01/2019",
-      },
-      {
-        id: 1,
-        quantity: 22,
-        costPrice: 300.0,
-        purchaceDate: "10/01/2020",
-      },
-    ];
+
     const columns = [
       {
         dataField: "id",
@@ -41,13 +28,13 @@ export default class StockTable extends Component {
       },
       {
         dataField: "quantity",
-        text: "Unidades compradas",
+        text: "Unidades restantes",
         events: rowEvents,
       },
     ];
     return (
       <SSTable
-        data={[]}
+        data={this.props.data || []}
         columns={columns}
         noDataIndication="Selecione um disco para visualizar seus registros de estoque"
       />

@@ -9,8 +9,13 @@ import SSForm from "../../components/form/SSForm";
 import StockForm from "../../components/stock/stockForm";
 import StockTable from "../../components/stock/stockTable";
 import SSFormLayout from "../../layout/SSFormLayout";
-import { apiDelete, apiPost, apiPut } from "../../utils/api/api-utils";
-import { alertMessageUtil, updateStateValue } from "../../utils/utils";
+import { apiDelete, apiGet, apiPost, apiPut } from "../../utils/api/api-utils";
+import {
+  alertMessageUtil,
+  handleErrorMessage,
+  handleSetAlert,
+  updateStateValue,
+} from "../../utils/utils";
 import StockModel from "./StockModel";
 
 export default class Stock extends Component {
@@ -19,138 +24,79 @@ export default class Stock extends Component {
     this.state = {
       alert: alertMessageUtil(),
       stock: new StockModel(),
-      isUpdate: false,
-      adresses: [],
+      stocks: [],
+      discs: [],
+      disc: {},
     };
   }
+
   async componentDidMount() {
-    // try {
-    //   await this.fetchAdresses();
-    // } catch (error) {
-    //   this.handleSetMessages(
-    //     ["Não foi possivel carregar os seus endereços"],
-    //     true
-    //   );
-    // }
+    await this.fetchDiscs();
+  }
+  async fetchDiscs() {
+    try {
+      let discs = await apiGet(process.env.REACT_APP_DISC_ENDPOINT);
+      console.log(discs);
+      this.setState({
+        discs,
+      });
+    } catch (error) {
+      handleErrorMessage(this.setState.bind(this), error);
+    }
   }
 
-  async handlePreventDefaut(event) {
+  async handleSubmit(event) {
     event.preventDefault();
     event.stopPropagation();
-  }
 
-  handleSelectedRow(row) {
-    let selectedRow = clone(row);
-    this.setState({
-      Stock: selectedRow,
-      isUpdate: true,
-    });
-  }
-  handleSetMessages(messages = [], show = false, title = "", variant = "") {
-    this.setState(() => ({
-      alert: alertMessageUtil(messages, show, title, variant),
-    }));
-  }
-  handleClear() {
-    this.setState({
-      Stock: new StockModel(),
-      isUpdate: false,
-    });
+    try {
+      const { stock, disc } = this.state;
+      stock.disc = { id: disc.id };
+
+      await apiPost(process.env.REACT_APP_STOCK_ENDPOINT, stock);
+      handleSetAlert(
+        this.setState.bind(this),
+        ["Estoque cadastrado com sucesso"],
+        "sucesso",
+        "success"
+      );
+
+      this.handleClear();
+      await this.fetchDiscs();
+    } catch (error) {
+      handleErrorMessage(this.setState.bind(this), error);
+    }
   }
 
   async handleDelete() {
-    if (!this.state.isUpdate) {
-      return;
-    }
-
-    const deliveryAddress = clone(this.state.deliveryAddress);
-
     try {
-      await apiDelete(
-        process.env.REACT_APP_ADDRESS_ENDPOINT,
-        deliveryAddress.id
-      );
+      const { stock } = this.state;
 
-      this.handleClear();
-      this.handleSetMessages(
-        [
-          `Endereço de entrega ${deliveryAddress.description} excluido com sucesso`,
-        ],
-        true,
-        "Sucesso",
+      await apiDelete(process.env.REACT_APP_STOCK_ENDPOINT, stock.id);
+      handleSetAlert(
+        this.setState.bind(this),
+        ["Estoque excluido com sucesso"],
+        "sucesso",
         "success"
       );
-      await this.fetchAdresses();
-    } catch (error) {
-      if (error.response?.data?.error) {
-        this.handleSetMessages(error.response?.data?.error.split(";;"), true);
-        return;
-      }
-      if (error.response?.data?.message) {
-        this.handleSetMessages(
-          [`${error.response?.data.error} : ${error.response?.data.message}`],
-          true
-        );
 
-        return;
-      }
-    }
-  }
-  async handleSubimit(event) {
-    event.preventDefault();
-    if (event.currentTarget.checkValidity() === false) {
-      event.stopPropagation();
-      this.setState(() => ({
-        formError: "true",
-      }));
-      return;
-    }
-    this.setState(() => ({
-      formError: "false",
-    }));
-
-    const deliveryAddress = clone(this.state.deliveryAddress);
-
-    try {
-      if (this.state.isUpdate) {
-        await apiPut(process.env.REACT_APP_ADDRESS_ENDPOINT, deliveryAddress);
-        this.handleSetMessages(
-          [
-            `Endereço de entrega ${deliveryAddress.description} atualizado com sucesso`,
-          ],
-          true,
-          "Sucesso",
-          "success"
-        );
-      } else {
-        await apiPost(process.env.REACT_APP_ADDRESS_ENDPOINT, deliveryAddress);
-        this.handleSetMessages(
-          [
-            `Endereço de entrega ${deliveryAddress.description} salvo com sucesso`,
-          ],
-          true,
-          "Sucesso",
-          "success"
-        );
-      }
       this.handleClear();
-      await this.fetchAdresses();
+      await this.fetchDiscs();
     } catch (error) {
-      if (error.response?.data?.error) {
-        this.handleSetMessages(error.response?.data?.error.split(";;"), true);
-
-        return;
-      }
-      if (error.response?.data?.message) {
-        this.handleSetMessages(
-          `${error.response?.data.error} : ${error.response?.data.message}`,
-          true
-        );
-
-        return;
-      }
+      handleErrorMessage(this.setState.bind(this), error);
     }
   }
+
+  handleSelectedDiscRow(row) {
+    let selectedRow = clone(row);
+
+    console.log(selectedRow.stock);
+    this.setState({
+      disc: selectedRow,
+      stocks: selectedRow.stock,
+    });
+  }
+  handleSelecteStockRow(row) {}
 
   async handleInputChange(event) {
     const target = event.target;
@@ -160,6 +106,15 @@ export default class Stock extends Component {
       updated,
     });
   }
+
+  handleClear() {
+    this.setState({
+      stock: new StockModel(),
+      disc: {},
+      stocks: [],
+    });
+  }
+
   render() {
     return (
       <SSFormLayout>
@@ -175,27 +130,30 @@ export default class Stock extends Component {
             title={this.state.alert.title}
           />
           <hr />
-
           <SSForm
-            onSubmit={this.handleSubimit.bind(this)}
+            onSubmit={this.handleSubmit.bind(this)}
             onCancel={this.handleClear.bind(this)}
-            onDelete={this.handleDelete.bind(this)}
-            allowDelete={this.state.isUpdate}
-            customSubmitText={this.state.isUpdate ? "Atualizar" : ""}
+            disabled={!this.state.disc?.id}
           >
             <StockForm
-              root="Stock"
-              Stock={this.state.Stock}
+              root="stock"
+              stock={this.state.stock}
               onChange={this.handleInputChange.bind(this)}
             />
             <hr />
           </SSForm>
           <hr />
           <h3>Discos</h3>
-          <DiscTable />
+          <DiscTable
+            onRowSelect={this.handleSelectedDiscRow.bind(this)}
+            data={this.state.discs}
+          />
           <hr />
           <h3>Estoque</h3>
-          <StockTable onRowSelect={this.handleSelectedRow.bind(this)} />
+          <StockTable
+            onRowSelect={this.handleSelecteStockRow.bind(this)}
+            data={this.state.stocks}
+          />
         </Card.Body>
       </SSFormLayout>
     );

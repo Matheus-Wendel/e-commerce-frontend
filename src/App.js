@@ -21,6 +21,7 @@ import SaleAccept from "./views/sale/SaleAccept";
 import PaymentAndAddress from "./views/payment-address/PaymentAndAddress";
 import PurchasesControl from "./views/purchases-control/PurchasesControl";
 import ClientCoupons from "./views/client-coupons/client-coupons";
+import Recorder from "./views/recorder/recorder";
 
 export default class App extends Component {
   constructor(props) {
@@ -183,6 +184,12 @@ export default class App extends Component {
             //authed={this.state.isLoggedIn}
             exact
             component={ClientCoupons}
+          />
+          <this.PublicRoute
+            path="/recorder"
+            //authed={this.state.isLoggedIn}
+            exact
+            component={Recorder}
           />
 
           <this.NotFoundRoute //authed={this.state.isLoggedIn}

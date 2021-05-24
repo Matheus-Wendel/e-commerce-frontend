@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { formatPercentageValue } from "../../utils/utils";
 import SSTable from "../table/SSTable";
 
 export default class PricingTable extends Component {
@@ -8,20 +9,7 @@ export default class PricingTable extends Component {
         this.props.onRowSelect(row);
       },
     };
-    const pricing = [
-      {
-        id: 1,
-        description: "Importados",
-        defautProfit: "100%",
-        minimumProfit: "80%",
-      },
-      {
-        id: 2,
-        description: "Vinis",
-        defautProfit: "300%",
-        minimumProfit: "100%",
-      },
-    ];
+
     const columns = [
       {
         dataField: "id",
@@ -37,13 +25,19 @@ export default class PricingTable extends Component {
         dataField: "defautProfit",
         text: "Lucro padrão",
         events: rowEvents,
+        formatter: (cell, row, rowIndex, formatExtraData) => {
+          return formatPercentageValue(cell);
+        },
       },
       {
         dataField: "minimumProfit",
         text: "Lucro minimo",
         events: rowEvents,
+        formatter: (cell, row, rowIndex, formatExtraData) => {
+          return formatPercentageValue(cell);
+        },
       },
     ];
-    return <SSTable data={pricing} columns={columns} />;
+    return <SSTable data={this.props.data || []} columns={columns} />;
   }
 }

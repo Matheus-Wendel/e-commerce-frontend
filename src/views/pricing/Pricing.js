@@ -3,16 +3,18 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import clone from "clone";
 import { Component } from "react";
 import { Card } from "react-bootstrap";
-import AddressForm from "../../components/address/addressForm";
-import AddressTable from "../../components/address/addressTable";
 import SSAlert from "../../components/alert/SSalert";
 import SSForm from "../../components/form/SSForm";
-import GenreTable from "../../components/genre/genreTable";
 import PricingForm from "../../components/pricing/pricingForm";
 import PricingTable from "../../components/pricing/pricingTable";
 import SSFormLayout from "../../layout/SSFormLayout";
-import { apiPost, apiGet, apiPut, apiDelete } from "../../utils/api/api-utils";
-import { alertMessageUtil, updateStateValue } from "../../utils/utils";
+import { apiDelete, apiGet, apiPost, apiPut } from "../../utils/api/api-utils";
+import {
+  alertMessageUtil,
+  handleErrorMessage,
+  handleSetAlert,
+  updateStateValue,
+} from "../../utils/utils";
 import PricingModel from "./PricingModel";
 
 export default class Pricing extends Component {
@@ -22,138 +24,88 @@ export default class Pricing extends Component {
       alert: alertMessageUtil(),
       pricing: new PricingModel(),
       isUpdate: false,
-      adresses: [],
+      prices: [],
     };
   }
   async componentDidMount() {
-    // try {
-    //   await this.fetchAdresses();
-    // } catch (error) {
-    //   this.handleSetMessages(
-    //     ["Não foi possivel carregar os seus endereços"],
-    //     true
-    //   );
-    // }
+    await this.fetchPrices();
+  }
+  async fetchPrices() {
+    try {
+      let prices = await apiGet(process.env.REACT_APP_PRICING_ENDPOINT);
+      console.log(prices);
+      this.setState({
+        prices,
+      });
+    } catch (error) {
+      handleErrorMessage(this.setState.bind(this), error);
+    }
   }
 
-  async handlePreventDefaut(event) {
+  async handleSubmit(event) {
     event.preventDefault();
     event.stopPropagation();
+
+    try {
+      const { pricing, isUpdate } = this.state;
+      if (isUpdate) {
+        await apiPut(process.env.REACT_APP_PRICING_ENDPOINT, pricing);
+        handleSetAlert(
+          this.setState.bind(this),
+          ["Precificação atualizada com sucesso"],
+          "sucesso",
+          "success"
+        );
+      } else {
+        await apiPost(process.env.REACT_APP_PRICING_ENDPOINT, pricing);
+        handleSetAlert(
+          this.setState.bind(this),
+          ["Precificação cadastrada com sucesso"],
+          "sucesso",
+          "success"
+        );
+      }
+      this.handleClear();
+      await this.fetchPrices();
+    } catch (error) {
+      handleErrorMessage(this.setState.bind(this), error);
+    }
+  }
+
+  async handleDelete() {
+    try {
+      const { pricing } = this.state;
+
+      await apiDelete(process.env.REACT_APP_PRICING_ENDPOINT, pricing.id);
+      handleSetAlert(
+        this.setState.bind(this),
+        ["Precificação excluida com sucesso"],
+        "sucesso",
+        "success"
+      );
+
+      this.handleClear();
+      await this.fetchPrices();
+    } catch (error) {
+      handleErrorMessage(this.setState.bind(this), error);
+    }
   }
 
   handleSelectedRow(row) {
     let selectedRow = clone(row);
+
+    console.log(selectedRow);
     this.setState({
-      pricing: selectedRow,
       isUpdate: true,
+      pricing: selectedRow,
     });
-  }
-  handleSetMessages(messages = [], show = false, title = "", variant = "") {
-    this.setState(() => ({
-      alert: alertMessageUtil(messages, show, title, variant),
-    }));
   }
   handleClear() {
     this.setState({
-      pricing: new PricingModel(),
       isUpdate: false,
+      pricing: {},
     });
   }
-
-  async handleDelete() {
-    if (!this.state.isUpdate) {
-      return;
-    }
-
-    const deliveryAddress = clone(this.state.deliveryAddress);
-
-    try {
-      await apiDelete(
-        process.env.REACT_APP_ADDRESS_ENDPOINT,
-        deliveryAddress.id
-      );
-
-      this.handleClear();
-      this.handleSetMessages(
-        [
-          `Endereço de entrega ${deliveryAddress.description} excluido com sucesso`,
-        ],
-        true,
-        "Sucesso",
-        "success"
-      );
-      await this.fetchAdresses();
-    } catch (error) {
-      if (error.response?.data?.error) {
-        this.handleSetMessages(error.response?.data?.error.split(";;"), true);
-        return;
-      }
-      if (error.response?.data?.message) {
-        this.handleSetMessages(
-          [`${error.response?.data.error} : ${error.response?.data.message}`],
-          true
-        );
-
-        return;
-      }
-    }
-  }
-  async handleSubimit(event) {
-    event.preventDefault();
-    if (event.currentTarget.checkValidity() === false) {
-      event.stopPropagation();
-      this.setState(() => ({
-        formError: "true",
-      }));
-      return;
-    }
-    this.setState(() => ({
-      formError: "false",
-    }));
-
-    const deliveryAddress = clone(this.state.deliveryAddress);
-
-    try {
-      if (this.state.isUpdate) {
-        await apiPut(process.env.REACT_APP_ADDRESS_ENDPOINT, deliveryAddress);
-        this.handleSetMessages(
-          [
-            `Endereço de entrega ${deliveryAddress.description} atualizado com sucesso`,
-          ],
-          true,
-          "Sucesso",
-          "success"
-        );
-      } else {
-        await apiPost(process.env.REACT_APP_ADDRESS_ENDPOINT, deliveryAddress);
-        this.handleSetMessages(
-          [
-            `Endereço de entrega ${deliveryAddress.description} salvo com sucesso`,
-          ],
-          true,
-          "Sucesso",
-          "success"
-        );
-      }
-      this.handleClear();
-      await this.fetchAdresses();
-    } catch (error) {
-      if (error.response?.data?.error) {
-        this.handleSetMessages(error.response?.data?.error.split(";;"), true);
-
-        return;
-      }
-      if (error.response?.data?.message) {
-        this.handleSetMessages(
-          `${error.response?.data.error} : ${error.response?.data.message}`,
-          true
-        );
-
-        return;
-      }
-    }
-  }
-
   async handleInputChange(event) {
     const target = event.target;
     let { name, value } = target;
@@ -179,7 +131,7 @@ export default class Pricing extends Component {
           <hr />
 
           <SSForm
-            onSubmit={this.handleSubimit.bind(this)}
+            onSubmit={this.handleSubmit.bind(this)}
             onCancel={this.handleClear.bind(this)}
             onDelete={this.handleDelete.bind(this)}
             allowDelete={this.state.isUpdate}
@@ -194,7 +146,10 @@ export default class Pricing extends Component {
           </SSForm>
           <hr />
           <h3>Precificações cadastradas</h3>
-          <PricingTable onRowSelect={this.handleSelectedRow.bind(this)} />
+          <PricingTable
+            onRowSelect={this.handleSelectedRow.bind(this)}
+            data={this.state.prices}
+          />
         </Card.Body>
       </SSFormLayout>
     );

@@ -10,7 +10,7 @@ export default class ArtistForm extends Component {
           <SSInput
             label="Nome do artista"
             name={`${this.props.root}.name`}
-            value={this.props?.client?.name || ""}
+            value={this.props?.artist?.name || ""}
             onChange={this.props.onChange}
           />
         </Form.Group>

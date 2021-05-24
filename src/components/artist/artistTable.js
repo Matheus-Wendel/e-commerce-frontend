@@ -5,25 +5,23 @@ import SSTable from "../table/SSTable";
 
 export default class ArtistTable extends Component {
   render() {
-    const artists = [
-      { id: 1, name: "Tim maia" },
-      { id: 2, name: "Ramones" },
-      { id: 3, name: "Windows96" },
-    ];
-
-    for (let i = 4; i < 50; i++) {
-      artists.push({ id: i, name: srtGenerator(8) });
-    }
+    const rowEvents = {
+      onClick: (e, column, columnIndex, row, rowIndex) => {
+        this.props.onRowSelect(row);
+      },
+    };
     const columns = [
       {
         dataField: "id",
         text: "ID",
+        events: rowEvents,
       },
       {
         dataField: "name",
         text: "Nome do artista",
+        events: rowEvents,
       },
     ];
-    return <SSTable data={artists} columns={columns} />;
+    return <SSTable data={this.props.data || []} columns={columns} />;
   }
 }

@@ -233,7 +233,7 @@ export default class Exchanges extends Component {
                     { id: true, description: "Sim" },
                     { id: false, description: "Não" },
                   ]}
-                  value={this.state?.inExchangeTrade.returnToStock || ""}
+                  value={this.state?.inExchangeTrade.returnToStock || false}
                   onChange={this.handleInputChange.bind(this)}
                   required
                 />

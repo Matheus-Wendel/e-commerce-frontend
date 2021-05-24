@@ -1,46 +1,38 @@
 import React, { Component } from "react";
-import { srtGenerator } from "../../utils/utils";
 import SSTable from "../table/SSTable";
 
 export default class DiscTable extends Component {
   render() {
-    const discs = [
-      { id: 1, name: "Alive 2007", releaseDate: "01/01/2007", status: "ativo" },
-      { id: 2, name: "GUZZLER EP", releaseDate: "01/01/2020", status: "ativo" },
-      {
-        id: 3,
-        name: "A day in a Yellow Beat",
-        releaseDate: "01/01/2000",
-        status: "inativo",
+    const rowEvents = {
+      onClick: (e, column, columnIndex, row, rowIndex) => {
+        this.props.onRowSelect(row);
       },
-    ];
-
-    for (let i = 4; i < 50; i++) {
-      discs.push({
-        id: i,
-        name: srtGenerator(8),
-        releaseDate: srtGenerator(4),
-        status: srtGenerator(3),
-      });
-    }
+    };
     const columns = [
       {
         dataField: "id",
         text: "ID",
+        events: rowEvents,
       },
       {
         dataField: "name",
         text: "Nome do disco",
+        events: rowEvents,
       },
       {
         dataField: "releaseDate",
         text: "Data de lançamento",
+        events: rowEvents,
       },
       {
-        dataField: "status",
-        text: "Status",
+        dataField: "active",
+        text: "Ativo",
+        events: rowEvents,
+        formatter: (cell, row, rowIndex, formatExtraData) => {
+          return cell == true ? "SIM" : "NÂO";
+        },
       },
     ];
-    return <SSTable data={discs} columns={columns} />;
+    return <SSTable data={this.props.data || []} columns={columns} />;
   }
 }

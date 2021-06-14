@@ -5,6 +5,7 @@ import { Component } from "react";
 import { Card } from "react-bootstrap";
 import SSAlert from "../../components/alert/SSalert";
 import SSForm from "../../components/form/SSForm";
+import PurchaseControlForm from "../../components/purchases/PurchaseControlForm";
 import PurchaseItemDevolutionForm from "../../components/purchases/PurchaseItemDevolutionForm";
 import PurchaseItemsTable from "../../components/purchases/PurchaseItemsTable";
 import PurchaseTable from "../../components/purchases/PurchaseTable";
@@ -16,7 +17,6 @@ import {
   handleSetAlert,
   updateStateValue,
 } from "../../utils/utils";
-import CreditCardModel from "./CreditCardModel";
 const querystring = require("querystring");
 export default class ClientPurchases extends Component {
   constructor(props) {
@@ -24,6 +24,7 @@ export default class ClientPurchases extends Component {
     this.state = {
       alert: alertMessageUtil(),
       purchaseItems: [],
+      purchase: {},
       purchases: [],
       purchaseItem: {},
       selectedTrade: false,
@@ -70,7 +71,7 @@ export default class ClientPurchases extends Component {
 
       this.setState({
         purchases,
-        purchaseItems: [],
+        purchase: {},
       });
     } catch (error) {
       handleErrorMessage(this.setState.bind(this), error);
@@ -85,7 +86,7 @@ export default class ClientPurchases extends Component {
     let selectedRow = clone(row);
 
     this.setState({
-      purchaseItems: selectedRow.purchaseItems,
+      purchase: selectedRow,
     });
   }
   handleSelectedPurchaseItemRow(row) {
@@ -133,9 +134,14 @@ export default class ClientPurchases extends Component {
             data={this.state.purchases}
             onRowSelect={this.handleSelectedPurchaseRow.bind(this)}
           />
+          <hr />
+          <h3>Dados da compra</h3>
+          <PurchaseControlForm root="purchase" purchase={this.state.purchase} />
+
+          <hr />
           <h3>Itens da compra</h3>
           <PurchaseItemsTable
-            data={this.state.purchaseItems}
+            data={this.state.purchase.purchaseItems}
             onRowSelect={this.handleSelectedPurchaseItemRow.bind(this)}
           />
           <SSForm
@@ -146,7 +152,7 @@ export default class ClientPurchases extends Component {
           >
             <PurchaseItemDevolutionForm
               root="purchaseItem"
-              purchaseItem={this.state.purchaseItem}
+              purchaseItem={this.state.purchase.purchaseItem}
             />
             <hr />
           </SSForm>

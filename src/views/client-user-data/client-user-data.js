@@ -12,6 +12,7 @@ import { apiDelete, apiPut } from "../../utils/api/api-utils";
 import {
   alertMessageUtil,
   getLoggedUser,
+  handleErrorMessage,
   updateStateValue,
 } from "../../utils/utils";
 import ClientUserDataModel from "./ClientUserDataModel";
@@ -35,6 +36,8 @@ export default class ClientUserData extends Component {
       delete user.purchases;
       delete user.ranking;
       delete user.active;
+      user.password = "";
+      user.passwordConfirmation = "";
 
       this.setState({
         client: user,
@@ -97,25 +100,16 @@ export default class ClientUserData extends Component {
     }));
 
     const client = clone(this.state.client);
-
+    console.log(client);
     try {
+      if (client.user.password !== client.user.passwordConfirmation) {
+        throw new Error("Senhas não coincidem");
+      }
       await apiPut(process.env.REACT_APP_CLIENT_ENDPOINT, client);
 
       window.location.href = "/login?status=atualizado";
     } catch (error) {
-      if (error.response?.data?.error) {
-        this.handleSetMessages(error.response?.data?.error.split(";;"), true);
-
-        return;
-      }
-      if (error.response?.data?.message) {
-        this.handleSetMessages(
-          `${error.response?.data.error} : ${error.response?.data.message}`,
-          true
-        );
-
-        return;
-      }
+      handleErrorMessage(this.setState.bind(this), error);
     }
   }
 

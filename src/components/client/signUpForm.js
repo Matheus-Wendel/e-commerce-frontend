@@ -45,7 +45,7 @@ export default class SignUpForm extends Component {
           />
         </Form.Group>
 
-        <Form.Group as={Col} md={6}>
+        <Form.Group as={Col} md={4}>
           <SSInput
             label="Email"
             name={`${this.props.root}.user.email`}
@@ -59,6 +59,15 @@ export default class SignUpForm extends Component {
             name={`${this.props.root}.user.password`}
             type="password"
             value={this.props?.client?.user?.password || ""}
+            onChange={this.props.onChange}
+          />
+        </Form.Group>
+        <Form.Group as={Col} md={4}>
+          <SSInput
+            label="Confirmação de senha"
+            name={`${this.props.root}.user.passwordConfirmation`}
+            type="password"
+            value={this.props?.client?.user?.passwordConfirmation || ""}
             onChange={this.props.onChange}
           />
         </Form.Group>

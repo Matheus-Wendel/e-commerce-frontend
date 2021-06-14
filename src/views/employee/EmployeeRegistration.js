@@ -1,68 +1,92 @@
 import { faCompactDisc } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Component } from "react";
-import { Card, Col, Container, Form, Row } from "react-bootstrap";
 import clone from "clone";
-
-import AddressForm from "../../components/address/addressForm";
-import SignUpForm from "../../components/client/signUpForm";
+import { Component } from "react";
+import { Card } from "react-bootstrap";
+import SSAlert from "../../components/alert/SSalert";
+import EmployeeForm from "../../components/employee/employeeForm";
+import EmployeeTable from "../../components/employee/employeeTable";
 import SSForm from "../../components/form/SSForm";
-import { updateStateValue } from "../../utils/utils";
-import SignUpModel from "./EmployeeModel";
-import { apiPost } from "../../utils/api/api-utils";
-import SSalert from "../../components/alert/SSalert";
-import Employee from "./EmployeeModel";
 import SSFormLayout from "../../layout/SSFormLayout";
-import SSSelect from "../../components/form/SSSelect";
+import { apiGet, apiPost, apiPut } from "../../utils/api/api-utils";
+import {
+  alertMessageUtil,
+  handleErrorMessage,
+  handleSetAlert,
+  updateStateValue,
+} from "../../utils/utils";
+import Employee from "./EmployeeModel";
 
 export default class EmployeeRegistration extends Component {
   constructor(props) {
     super(props);
     this.state = {
       employee: new Employee(),
-      formError: "",
-      showAlert: false,
-      errorMessages: [],
+      employees: [],
+      isUpdate: false,
+      alert: alertMessageUtil(),
     };
   }
-  async handleSubimit(event) {
+  async componentDidMount() {
+    await this.fetchEmployees();
+  }
+  async handleSubmit(event) {
     event.preventDefault();
-    if (event.currentTarget.checkValidity() === false) {
-      event.stopPropagation();
-      this.setState(() => ({
-        formError: "true",
-      }));
-      return;
-    }
-    this.setState(() => ({
-      formError: "false",
-    }));
+    event.stopPropagation();
 
-    const client = clone(this.state.client);
-    let deliveryAddress = [client.deliveryAddresses];
-    client.deliveryAddresses = deliveryAddress;
     try {
-      await apiPost(process.env.REACT_APP_CLIENT_ENDPOINT, client);
-
-      window.location.href = "/login?status=cadastro";
+      const { employee, isUpdate } = this.state;
+      console.log(employee);
+      if (employee.user.password !== employee.user.passwordConfirmation) {
+        throw new Error("Senhas não coincidem");
+      }
+      if (isUpdate) {
+        await apiPut(process.env.REACT_APP_EMPLOYEE_ENDPOINT, employee);
+        handleSetAlert(
+          this.setState.bind(this),
+          ["Funcionario atualizado com sucesso"],
+          "sucesso",
+          "success"
+        );
+      } else {
+        await apiPost(process.env.REACT_APP_EMPLOYEE_ENDPOINT, employee);
+        handleSetAlert(
+          this.setState.bind(this),
+          ["Funcionario cadastrado com sucesso"],
+          "sucesso",
+          "success"
+        );
+      }
+      this.handleClear();
+      await this.fetchEmployees();
     } catch (error) {
-      if (error.response?.data?.error) {
-        this.setState(() => ({
-          errorMessages: error.response?.data?.error.split(";;"),
-          showAlert: true,
-        }));
-        return;
-      }
-      if (error.response?.data?.message) {
-        this.setState(() => ({
-          errorMessages: [
-            `${error.response?.data.error} : ${error.response?.data.message}`,
-          ],
-          showAlert: true,
-        }));
-        return;
-      }
+      handleErrorMessage(this.setState.bind(this), error);
     }
+  }
+
+  async fetchEmployees() {
+    try {
+      let employees = await apiGet(process.env.REACT_APP_EMPLOYEE_ENDPOINT);
+
+      this.setState({
+        employees,
+      });
+    } catch (error) {
+      handleErrorMessage(this.setState.bind(this), error);
+    }
+  }
+  handleClear() {
+    this.setState({
+      employee: new Employee(),
+      isUpdate: false,
+    });
+  }
+  handleSelectedRow(row) {
+    let selectedRow = clone(row);
+    this.setState({
+      isUpdate: true,
+      employee: selectedRow,
+    });
   }
 
   async handleInputChange(event) {
@@ -81,37 +105,32 @@ export default class EmployeeRegistration extends Component {
             <FontAwesomeIcon icon={faCompactDisc} spin className="mr-2" />
             Cadastro de novos funcionarios
           </Card.Title>
-          <SSalert
-            showAlert={this.state.showAlert}
-            messages={this.state.errorMessages}
+          <SSAlert
+            showAlert={this.state.alert.show}
+            messages={this.state.alert.messages}
+            variant={this.state.alert.variant}
+            title={this.state.alert.title}
           />
           <hr />
           <SSForm
-            onSubmit={this.handleSubimit.bind(this)}
-            onCancel={() => {}}
-            validated={this.state.formError}
+            onSubmit={this.handleSubmit.bind(this)}
+            onCancel={this.handleClear.bind(this)}
+            customSubmitText={this.state.isUpdate ? "Atualizar" : ""}
           >
             <h4>Dados pessoais</h4>
-            <SignUpForm
+            <EmployeeForm
               root="employee"
-              client={this.state.employee}
+              employee={this.state.employee}
               onChange={this.handleInputChange.bind(this)}
+              isUpdate={this.state.isUpdate}
             />
-            <Form.Row>
-              <Form.Group as={Col} md={5}>
-                <SSSelect
-                  label="Tipo de cadastro"
-                  name={`employee.permission`}
-                  items={[
-                    { id: "EMPLOYEE", description: "Funcionario" },
-                    { id: "SALES_MANAGER", description: "Gerente de vendas" },
-                  ]}
-                  value={this.state?.employee?.permission || ""}
-                  onChange={this.handleInputChange}
-                />
-              </Form.Group>
-            </Form.Row>
           </SSForm>
+          <hr />
+          <h3>Funcionarios cadastrados</h3>
+          <EmployeeTable
+            onRowSelect={this.handleSelectedRow.bind(this)}
+            data={this.state.employees}
+          />
         </Card.Body>
       </SSFormLayout>
     );

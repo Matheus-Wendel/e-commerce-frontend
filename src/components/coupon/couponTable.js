@@ -20,6 +20,11 @@ export default class CouponTable extends Component {
         events: rowEvents,
       },
       {
+        dataField: "code",
+        text: "Código",
+        events: rowEvents,
+      },
+      {
         dataField: "active",
         text: "Ativo",
         formatter: (cell, row, rowIndex, formatExtraData) => {

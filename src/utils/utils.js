@@ -19,6 +19,10 @@ export async function getLoggedUser() {
     let [usr] = await apiGet(process.env.REACT_APP_CLIENT_ENDPOINT);
     return usr;
   }
+  if (auth?.Permission === "EMPLOYEE" || auth?.Permission === "SALES_MANAGER") {
+    let [usr] = await apiGet(process.env.REACT_APP_EMPLOYEE_ENDPOINT + "/me");
+    return usr;
+  }
   return null;
 }
 

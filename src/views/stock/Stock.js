@@ -9,7 +9,7 @@ import SSForm from "../../components/form/SSForm";
 import StockForm from "../../components/stock/stockForm";
 import StockTable from "../../components/stock/stockTable";
 import SSFormLayout from "../../layout/SSFormLayout";
-import { apiDelete, apiGet, apiPost, apiPut } from "../../utils/api/api-utils";
+import { apiDelete, apiGet, apiPost } from "../../utils/api/api-utils";
 import {
   alertMessageUtil,
   handleErrorMessage,

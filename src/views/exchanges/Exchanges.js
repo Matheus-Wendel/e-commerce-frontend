@@ -141,8 +141,13 @@ export default class Exchanges extends Component {
 
     try {
       const { inExchangeTrade } = this.state;
-      console.log(inExchangeTrade);
-      await apiPut(process.env.REACT_APP_TRADE_ENDPOINT, inExchangeTrade);
+      const data = {
+        ...inExchangeTrade,
+        returnToStock: inExchangeTrade.returnToStock === "1" ? true : false,
+      };
+
+      console.log(data);
+      await apiPut(process.env.REACT_APP_TRADE_ENDPOINT, data);
       await this.fetchInExchangeTrades();
       await this.fetchFinishedTrades();
       this.setState({
@@ -230,8 +235,8 @@ export default class Exchanges extends Component {
                   label="Retornar ao estoque?"
                   name={`inExchangeTrade.returnToStock`}
                   items={[
-                    { id: true, description: "Sim" },
-                    { id: false, description: "Não" },
+                    { id: "1", description: "Sim" },
+                    { id: "2", description: "Não" },
                   ]}
                   value={this.state?.inExchangeTrade.returnToStock || false}
                   onChange={this.handleInputChange.bind(this)}

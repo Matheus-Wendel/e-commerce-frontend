@@ -18,7 +18,10 @@ export default class Layout extends Component {
             <SSNavbar />
           </header>
           <main style={{ flexGrow: "1" }}>{children}</main>
-          <footer style={{ color: "white" }} className="p-2 ">
+          <footer
+            style={{ color: "white", backgroundColor: "#0c0e0f" }}
+            className="p-2 "
+          >
             <p className="text-center m-0">SoundSource</p>
             <p className="text-center m-0">Matheus Wendel</p>
             <p className="text-center m-0">Fatec Mogi das Cruzes 2021</p>

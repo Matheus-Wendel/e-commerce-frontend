@@ -1,7 +1,7 @@
 import { faCartPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { Component } from "react";
-import { Button, Card, CardColumns, Col, Row } from "react-bootstrap";
+import { Button, Card, Col, Row } from "react-bootstrap";
 import "../../App.css";
 import { apiGet, apiPost } from "../../utils/api/api-utils";
 import {
@@ -31,7 +31,6 @@ export default class SSCatalog extends Component {
         "success"
       );
     } catch (error) {
-      console.log(error);
       handleErrorMessage(this.setState.bind(this), error);
     }
   }

@@ -7,19 +7,22 @@ export default class SSCarousel extends Component {
     this.state = {
       items: [
         {
-          title: "Sua Música aqui",
-          description:
-            "Nulla vitae elit libero, a pharetra augue mollis interdum.",
+          title: "SoundSource",
+          description: "O melhor na internet para encontrar sua música.",
+          imgLink:
+            "https://image.winudf.com/v2/image/Y29tLk1vYmlsZVN0cmFuZ2VyLmFwcDAwODBfc2NyZWVuXzBfM3VnaWRlM2E/screen-0.jpg?fakeurl=1&type=.jpg",
         },
         {
-          title: "Entre e confira",
-          description:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+          title: "Encontre seu novo álbum preferido",
+          description: "Busque por nome, artista, gênero, gravadora...",
+          imgLink:
+            "https://i.pinimg.com/originals/db/b3/37/dbb3378ac8b46699dfd456c6fda3bcb5.jpg",
         },
         {
           title: "Promoções de discos e cds",
-          description:
-            " Praesent commodo cursus magna, vel scelerisque nisl consectetur.",
+          description: "Os melhores preços aqui",
+          imgLink:
+            "https://cdn.pixabay.com/photo/2018/08/22/20/23/cd-3624544_960_720.jpg",
         },
       ],
     };
@@ -33,9 +36,12 @@ export default class SSCarousel extends Component {
           <img
             style={{
               filter: "brightness(50%)",
+              width: "800px",
+              height: "300px",
+              objectFit: "cover",
             }}
             className="d-block w-100"
-            src={`https://picsum.photos/800/300?random=${i}`}
+            src={item.imgLink}
             alt={`${i} Slide`}
           />
           <Carousel.Caption>

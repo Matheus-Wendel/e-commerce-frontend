@@ -53,7 +53,8 @@ export default class SSNavbar extends Component {
                 <Nav.Link href="/myCoupons">Meus cupons</Nav.Link>
               </>
             )}
-            {authInfo?.Permission === "EMPLOYEE" && (
+            {(authInfo?.Permission === "EMPLOYEE" ||
+              authInfo?.Permission === "SALES_MANAGER") && (
               <>
                 <NavDropdown title="Cadastro" id="collasible-nav-dropdown">
                   <NavDropdown.Item href="/artist">Artistas</NavDropdown.Item>
@@ -62,10 +63,17 @@ export default class SSNavbar extends Component {
                     Gravadoras
                   </NavDropdown.Item>
                   <NavDropdown.Item href="/disc">Discos</NavDropdown.Item>
-                  <NavDropdown.Divider />
-                  <NavDropdown.Item href="/newEmployees">
-                    Usuarios
-                  </NavDropdown.Item>
+                  {authInfo?.Permission === "SALES_MANAGER" && (
+                    <>
+                      <NavDropdown.Item href="/promoCoupon">
+                        Cupons promocionais
+                      </NavDropdown.Item>
+                      <NavDropdown.Divider />
+                      <NavDropdown.Item href="/newEmployees">
+                        Usuarios
+                      </NavDropdown.Item>
+                    </>
+                  )}
                 </NavDropdown>
                 <NavDropdown title="Preço" id="collasible-nav-dropdown">
                   <NavDropdown.Item href="/pricing">
@@ -81,6 +89,7 @@ export default class SSNavbar extends Component {
                 </NavDropdown> */}
                 <Nav.Link href="/exchangeManagement">Trocas</Nav.Link>
                 <Nav.Link href="/purchaseControl">Compras</Nav.Link>
+                <Nav.Link href="/analysis">Análise</Nav.Link>
                 <Nav.Link href="/stock">Estoque</Nav.Link>
               </>
             )}

@@ -7,9 +7,9 @@ import DiscSearchForm from "../../components/disc/discSearchForm";
 import Layout from "../../layout/Layout";
 import { apiGet } from "../../utils/api/api-utils";
 import {
+  alertMessageUtil,
   handleErrorMessage,
   updateStateValue,
-  alertMessageUtil,
 } from "../../utils/utils";
 
 export default class Home extends Component {
@@ -93,7 +93,7 @@ export default class Home extends Component {
     return (
       <Layout>
         <Container>
-          <SSCarousel className="mb-5" />
+          <SSCarousel className="mb-5 mt-5" />
 
           <Container>
             <SSAlert

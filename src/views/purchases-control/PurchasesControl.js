@@ -63,7 +63,6 @@ export default class PurchasesControl extends Component {
 
   handleSelectedRow(row) {
     let selectedRow = clone(row);
-
     this.setState({
       purchase: selectedRow,
       isSelected: true,
@@ -113,7 +112,7 @@ export default class PurchasesControl extends Component {
             <hr />
           </SSForm>
           <hr />
-          <h3>Solicitações de troca</h3>
+          <h3>Compras realizadas</h3>
           <PurchaseTable
             data={this.state.purchases}
             onRowSelect={this.handleSelectedRow.bind(this)}

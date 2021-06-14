@@ -1,7 +1,7 @@
 import { faCompactDisc, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import clone from "clone";
-import { Component } from "react";
+import { Component, createRef } from "react";
 import { Button, Card, Col, Form } from "react-bootstrap";
 import moment from "moment";
 import "moment/locale/pt-br";
@@ -16,24 +16,79 @@ import {
 } from "../../utils/utils";
 import { Bar, Line } from "react-chartjs-2";
 import SSInput from "../../components/form/SSInput";
+import { Chart } from "chart.js";
 //https://stackoverflow.com/questions/16909553/how-to-get-list-of-months-javascript
+let myLineChart;
+
 export default class Analysis extends Component {
   constructor(props) {
     super(props);
     this.state = {
       alert: alertMessageUtil(),
-      startDate: moment().subtract(7, "days").format("yyyy-MM-DD"),
+      startDate: moment().subtract(15, "days").format("yyyy-MM-DD"),
       endDate: moment().format("yyyy-MM-DD"),
       purchases: [],
       discs: [],
       disc: {},
     };
   }
+  chartRef = createRef();
 
-  // async componentDidMount() {
-  //   await this.fetchPurchases();
-  //   this.prepareDataSets();
-  // }
+  componentDidMount() {
+    this.buildChart();
+  }
+
+  componentDidUpdate() {
+    this.buildChart();
+  }
+
+  buildChart = () => {
+    const myChartRef = this.chartRef.current.getContext("2d");
+
+    if (typeof myLineChart !== "undefined") myLineChart.destroy();
+    myLineChart = new Chart(myChartRef, {
+      type: "line",
+      data: {
+        datasets: [
+          {
+            label: "Compras no dia",
+            data: this.state.dataMap,
+            fill: false,
+            borderColor: "red",
+          },
+        ],
+      },
+      options: {
+        title: {
+          display: true,
+          text: "Chart.js Time Scale",
+        },
+        scales: {
+          xAxes: [
+            {
+              type: "time",
+              time: {
+                format: "DD/MM/YYYY",
+                tooltipFormat: "ll",
+                parser: "YYYY-MM-DD",
+              },
+              scaleLabel: {
+                display: true,
+                labelString: "Date",
+              },
+            },
+          ],
+          yAxes: [
+            {
+              ticks: {
+                beginAtZero: true,
+              },
+            },
+          ],
+        },
+      },
+    });
+  };
 
   // prepareDataSets(year, month) {
   //   moment.locale("pt-br");
@@ -100,50 +155,51 @@ export default class Analysis extends Component {
       start.getTime() + Math.random() * (end.getTime() - start.getTime())
     );
   }
+
   render() {
-    const { dataMap } = this.state;
+    // const { dataMap } = this.state;
 
-    const data = {
-      datasets: [
-        {
-          label: "Compras no dia",
-          data: dataMap,
-          fill: false,
-          borderColor: "red",
-        },
-      ],
-    };
+    // const data = {
+    //   datasets: [
+    //     {
+    //       label: "Compras no dia",
+    //       data: dataMap,
+    //       fill: false,
+    //       borderColor: "red",
+    //     },
+    //   ],
+    // };
 
-    const options = {
-      title: {
-        display: true,
-        text: "Chart.js Time Scale",
-      },
-      scales: {
-        xAxes: [
-          {
-            type: "time",
-            time: {
-              format: "DD/MM/YYYY",
-              tooltipFormat: "ll",
-              parser: "YYYY-MM-DD",
-            },
-            scaleLabel: {
-              display: true,
-              labelString: "Date",
-            },
-          },
-        ],
-        yAxes: [
-          {
-            scaleLabel: {
-              display: true,
-              labelString: "value",
-            },
-          },
-        ],
-      },
-    };
+    // const options = {
+    //   title: {
+    //     display: true,
+    //     text: "Chart.js Time Scale",
+    //   },
+    //   scales: {
+    //     xAxes: [
+    //       {
+    //         type: "time",
+    //         time: {
+    //           format: "DD/MM/YYYY",
+    //           tooltipFormat: "ll",
+    //           parser: "YYYY-MM-DD",
+    //         },
+    //         scaleLabel: {
+    //           display: true,
+    //           labelString: "Date",
+    //         },
+    //       },
+    //     ],
+    //     yAxes: [
+    //       {
+    //         scaleLabel: {
+    //           display: true,
+    //           labelString: "value",
+    //         },
+    //       },
+    //     ],
+    //   },
+    // };
     // let instert = [];
     // for (let i = 0; i < 1000; i++) {
     //   let ano = Math.floor(Math.random() * 3) + 2019;
@@ -160,18 +216,18 @@ export default class Analysis extends Component {
     //     </p>
     //   );
     // }
-    let instert = [];
-    for (let i = 0; i < 1000; i++) {
-      const date = moment(
-        this.randomDate(new Date(2019, 0, 1), new Date())
-      ).format("YYYY-MM-DD");
+    // let instert = [];
+    // for (let i = 0; i < 1000; i++) {
+    //   const date = moment(
+    //     this.randomDate(new Date(2019, 0, 1), new Date())
+    //   ).format("YYYY-MM-DD");
 
-      instert.push(
-        <p>
-          {`INSERT INTO PURCHASE VALUES(${i}, TIMESTAMP '${date} 20:41:21.65', 'PROCESSING', 100.0, NULL, 6, 1, NULL);`}
-        </p>
-      );
-    }
+    //   instert.push(
+    //     <p>
+    //       {`INSERT INTO PURCHASE VALUES(${i}, TIMESTAMP '${date} 20:41:21.65', 'PROCESSING', 100.0, NULL, 6, 1, NULL);`}
+    //     </p>
+    //   );
+    // }
     return (
       <SSFormLayout>
         <Card.Body>
@@ -224,7 +280,9 @@ export default class Analysis extends Component {
           />
 
           <hr />
-          <Line data={data} options={options} />
+          <div>
+            <canvas id="myChart" ref={this.chartRef} />
+          </div>
           {/* {instert} */}
         </Card.Body>
       </SSFormLayout>
